@@ -15,7 +15,6 @@
       position: relative;
     }
 
-    /* Optional overlay to increase contrast */
     body::before {
       content: "";
       position: fixed;
@@ -39,6 +38,8 @@
       padding: 8px 15px;
       border-radius: 8px;
       color: #172c66;
+      margin-top: 10px;
+      font-size: 1.2rem;
     }
 
     .poem-box {
@@ -51,7 +52,7 @@
       min-height: 120px;
       transition: transform 0.3s ease;
       position: relative;
-      overflow: hidden; /* so decorations that go outside are clipped */
+      overflow: hidden;
     }
 
     .bounce {
@@ -84,54 +85,27 @@
       background-color: #fb8500;
     }
 
-    /* Decorations implemented using ::before or ::after pseudo‑elements */
-    .decor {
+    .sparkle {
       position: absolute;
       font-size: 2rem;
-      color: #f582ae;
-      opacity: 0.7;
-      z-index: 1;
+      opacity: 0.85;
+      user-select: none;
       pointer-events: none;
+      animation: float 2s infinite alternate ease-in-out;
     }
 
-    .decor1::before {
-      content: "★"; /* star */
-    }
-    .decor2::before {
-      content: "☆"; /* outline star */
-    }
-    .decor3::before {
-      content: "✎"; /* pencil / crayon-like mark */
-    }
-
-    .decor1 {
-      top: -10px;
-      left: -10px;
-    }
-
-    .decor2 {
-      top: -10px;
-      right: -10px;
-    }
-
-    .decor3 {
-      bottom: -10px;
-      left: 40%;
+    @keyframes float {
+      from { transform: translateY(0); }
+      to { transform: translateY(-8px); }
     }
   </style>
 </head>
 <body>
 
-  <!-- (Optional header-image) -->
-  <img src="https://cdn.pixabay.com/photo/2014/04/02/10/01/playground-304974_1280.png"
-       alt="playground icon"
-       style="width:120px; margin-bottom:20px; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));">
-
   <h1>St Catherine's Poetry Playground</h1>
   <p>Click the button to create your own poem!</p>
 
   <div class="poem-box" id="poemBox">
-   
     Your poem will appear here...
   </div>
 
@@ -140,37 +114,75 @@
   <audio id="chimeSound" src="magic_chime.mp3" preload="auto"></audio>
 
   <script>
-    const who = [
-      "A dragon", "The moon", "A kitten", "A pirate", "A robot",
-      "The sun", "A fairy", "A dinosaur", "A wizard", "A butterfly"
+   const who = [
+  "A dragon", "The moon", "A kitten", "A pirate", "A robot",
+  "The sun", "A fairy", "A dinosaur", "A wizard", "A butterfly",
+  "A unicorn", "A superhero", "A snowman", "A talking tree", "A sleepy panda",
+  "A sneaky fox", "A glowing jellyfish", "A playful ghost", "A musical mermaid", "A tiny alien"
+];
+
+const doingWhat = [
+  "dances", "sings", "jumps", "giggles", "spins",
+  "whispers", "paints", "stomps", "dreams", "twirls",
+  "floats", "roars", "scribbles", "tiptoes", "tickles",
+  "zooms", "sleeps", "waves", "glows", "disappears"
+];
+
+const whereHow = [
+  "in the rain", "on a rainbow", "under the stars",
+  "on a flying cloud", "through the jungle", "beside a waterfall",
+  "with a magic brush", "in a puddle", "on a mountain top",
+  "over a candy castle", "inside a bubble", "behind a waterfall",
+  "across the Milky Way", "inside a teacup", "around a bonfire",
+  "beneath a giant mushroom", "inside a dream", "under a glittery sky",
+  "between two rainbows", "on a trampoline of clouds"
+];
+const withWhat = [
+  "carrying a rainbow kite",
+  "holding a cup of stars",
+  "with a magical umbrella",
+  "bringing a basket of dreams",
+  "dragging a bag of giggles",
+  "carrying a glowing lantern",
+  "with a backpack full of paint",
+  "balancing a spinning top",
+  "holding a sparkly wand",
+  "carrying a box of whispers"
+];
+
     ];
 
-    const doingWhat = [
-      "dances", "sings", "jumps", "giggles", "spins",
-      "whispers", "paints", "stomps", "dreams", "twirls"
-    ];
+    const sparkleColors = ["#f582ae", "#8bd3dd", "#ffb703", "#a2d2ff", "#bde0fe", "#ffc8dd"];
 
-    const whereHow = [
-      "in the rain", "on a rainbow", "under the stars",
-      "on a flying cloud", "through the jungle", "beside a waterfall",
-      "with a magic brush", "in a puddle", "on a mountain top",
-      "over a candy castle"
-    ];
-
-    function getRandomWord(array) {
+    function getRandomItem(array) {
       return array[Math.floor(Math.random() * array.length)];
     }
 
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function createSparkles(count = 6) {
+      let sparkles = "";
+      for (let i = 0; i < count; i++) {
+        const top = getRandomInt(-20, 100);
+        const left = getRandomInt(0, 90);
+        const color = getRandomItem(sparkleColors);
+        sparkles += `<div class="sparkle" style="top:${top}%; left:${left}%; color:${color}">✨</div>`;
+      }
+      return sparkles;
+    }
+
     function generatePoem() {
-      const line1 = getRandomWord(who);
-      const line2 = getRandomWord(doingWhat);
-      const line3 = getRandomWord(whereHow);
+      const line1 = getRandomItem(who);
+      const line2 = getRandomItem(doingWhat);
+      const line3 = getRandomItem(whereHow);
 
       const poemBox = document.getElementById("poemBox");
+      const sparkles = createSparkles();
+
       poemBox.innerHTML = `
-        <div class="decor decor1"></div>
-        <div class="decor decor2"></div>
-        <div class="decor decor3"></div>
+        ${sparkles}
         ${line1}<br>${line2}<br>${line3}
       `;
 
