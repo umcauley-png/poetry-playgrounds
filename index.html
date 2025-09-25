@@ -51,8 +51,8 @@
       border-radius: 15px;
       min-height: 180px;
       transition: transform 0.3s ease;
-      position: relative;
-      overflow: hidden;
+      position: relative; /* key for sparkles positioning */
+      overflow: visible; /* allow sparkles outside */
     }
 
     .bounce {
@@ -92,6 +92,7 @@
       user-select: none;
       pointer-events: none;
       animation: float 2s infinite alternate ease-in-out;
+      will-change: transform;
     }
 
     @keyframes float {
@@ -162,15 +163,43 @@
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    function createSparkles(count = 6) {
-      let sparkles = "";
+    // Create sparkles only around edges of poem-box
+    function createSparkles(count = 8) {
+      const container = document.getElementById('poemBox');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      let sparklesHTML = "";
+
       for (let i = 0; i < count; i++) {
-        const top = getRandomInt(-20, 100);
-        const left = getRandomInt(0, 90);
         const color = getRandomItem(sparkleColors);
-        sparkles += `<div class="sparkle" style="top:${top}%; left:${left}%; color:${color}">✨</div>`;
+        let top, left;
+
+        // Randomly pick an edge: 0=top,1=right,2=bottom,3=left
+        const edge = getRandomInt(0,3);
+
+        switch(edge) {
+          case 0: // top edge
+            top = getRandomInt(-20, 0);
+            left = getRandomInt(0, width);
+            break;
+          case 1: // right edge
+            top = getRandomInt(0, height);
+            left = getRandomInt(width, width + 20);
+            break;
+          case 2: // bottom edge
+            top = getRandomInt(height, height + 20);
+            left = getRandomInt(0, width);
+            break;
+          case 3: // left edge
+            top = getRandomInt(0, height);
+            left = getRandomInt(-20, 0);
+            break;
+        }
+
+        sparklesHTML += `<div class="sparkle" style="top:${top}px; left:${left}px; color:${color}">✨</div>`;
       }
-      return sparkles;
+
+      return sparklesHTML;
     }
 
     function generatePoem() {
