@@ -1,145 +1,171 @@
-// Extended rhyming dictionary with 15+ rhyme groups
-const rhymeGroups = [
-  {
-    base: "tree",
-    rhymes: ["bee", "sea", "free", "knee", "glee"],
-    lines: [
-      "A lion danced beside the tree",
-      "Then leapt across the open {rhyme}"
-    ]
-  },
-  {
-    base: "star",
-    rhymes: ["car", "far", "jar", "guitar", "bazaar"],
-    lines: [
-      "A fairy flew close to a star",
-      "Then zipped away inside a {rhyme}"
-    ]
-  },
-  {
-    base: "night",
-    rhymes: ["light", "kite", "flight", "bright", "sight"],
-    lines: [
-      "A dragon soared into the night",
-      "Its wings aglow with golden {rhyme}"
-    ]
-  },
-  {
-    base: "moon",
-    rhymes: ["spoon", "tune", "June", "balloon"],
-    lines: [
-      "The kitten howled beneath the moon",
-      "Then danced along to a magic {rhyme}"
-    ]
-  },
-  {
-    base: "sky",
-    rhymes: ["fly", "high", "sigh", "eye", "goodbye"],
-    lines: [
-      "A robot launched into the sky",
-      "It waved hello and whispered {rhyme}"
-    ]
-  },
-  {
-    base: "snow",
-    rhymes: ["glow", "flow", "go", "throw"],
-    lines: [
-      "A wizard painted scenes in snow",
-      "Each brushstroke made the mountains {rhyme}"
-    ]
-  },
-  {
-    base: "rain",
-    rhymes: ["train", "plain", "lane", "main"],
-    lines: [
-      "A unicorn danced in the rain",
-      "And galloped through a candy {rhyme}"
-    ]
-  },
-  {
-    base: "play",
-    rhymes: ["day", "way", "stay", "array"],
-    lines: [
-      "A penguin sang a tune of play",
-      "And waddled in a joyful {rhyme}"
-    ]
-  },
-  {
-    base: "stream",
-    rhymes: ["dream", "gleam", "beam", "team"],
-    lines: [
-      "A turtle glided down the stream",
-      "Then vanished in a glowing {rhyme}"
-    ]
-  },
-  {
-    base: "light",
-    rhymes: ["height", "bright", "night", "flight"],
-    lines: [
-      "A squirrel raced toward the light",
-      "Its tail a blur of shining {rhyme}"
-    ]
-  },
-  {
-    base: "cake",
-    rhymes: ["lake", "snake", "make", "break"],
-    lines: [
-      "A pirate searched for golden cake",
-      "But found a castle near the {rhyme}"
-    ]
-  },
-  {
-    base: "ball",
-    rhymes: ["hall", "call", "wall", "small"],
-    lines: [
-      "A puppy chased a bouncy ball",
-      "It bounced into a rainbow {rhyme}"
-    ]
-  },
-  {
-    base: "fog",
-    rhymes: ["log", "frog", "jog", "hog"],
-    lines: [
-      "A ghost emerged from swirling fog",
-      "And danced around a talking {rhyme}"
-    ]
-  },
-  {
-    base: "door",
-    rhymes: ["floor", "more", "roar", "core"],
-    lines: [
-      "An owl peeked behind the door",
-      "And heard a tiny dragon {rhyme}"
-    ]
-  },
-  {
-    base: "sun",
-    rhymes: ["fun", "run", "done", "won"],
-    lines: [
-      "A monkey played beneath the sun",
-      "Its laughter echoed full of {rhyme}"
-    ]
-  }
-];
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>St Catherine's Poetry Playground</title>
+  <style>
+    body {
+      font-family: 'Avenir Next', 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background: url('https://raw.githubusercontent.com/umcauley-png/poetry-playgrounds/refs/heads/main/a%20playground%20that%20i%20can%20use%20as%20a%20background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #172c66;
+      text-align: center;
+      padding: 40px;
+    }
 
-// Generate a rhyming poem using one of the rhyme groups
-function generateRhymingPoem(userLine) {
-  const rhymeSet = rhymeGroups[Math.floor(Math.random() * rhymeGroups.length)];
-  const rhymeWord = rhymeSet.rhymes[Math.floor(Math.random() * rhymeSet.rhymes.length)];
+    h1 {
+      color: #f582ae;
+      background-color: rgba(255, 255, 255, 0.9);
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 12px;
+    }
 
-  // Replace {rhyme} in line 2
-  const line1 = rhymeSet.lines[0];
-  const line2 = rhymeSet.lines[1].replace("{rhyme}", rhymeWord);
+    p {
+      background-color: rgba(255, 255, 255, 0.7);
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
 
-  let poemLines = [line1, line2];
+    .poem-box {
+      margin: 40px auto;
+      font-size: 1.8rem;
+      background-color: rgba(214, 246, 214, 0.95);
+      border: 4px dashed #8bd3dd;
+      padding: 30px;
+      border-radius: 15px;
+      min-height: 140px;
+      transition: transform 0.3s ease;
+      position: relative;
+      width: 90%;
+      max-width: 600px;
+      z-index: 2;
+    }
 
-  if (userLine.trim()) {
-    poemLines.push(userLine.trim());
-  }
+    .bounce {
+      animation: bounce 0.6s;
+    }
 
-  // Add a closing line from additional lines
-  poemLines.push(getRandomWord(additionalLines));
+    @keyframes bounce {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.1); }
+      50% { transform: scale(0.95); }
+      70% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
 
-  return poemLines.join('\n');
-}
+    .controls {
+      margin: 20px 0;
+    }
 
+    button {
+      background-color: #ffb703;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      margin: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-family: inherit;
+    }
+
+    button:hover {
+      background-color: #fb8500;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      font-size: 1rem;
+      width: 250px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin: 10px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: radial-gradient(circle, #ffb3ec, #ffc6ff, #bdb2ff, #a0c4ff);
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: twinkle 2s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 0.2; transform: scale(1.3); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>St Catherine's Poetry Playground</h1>
+  <p>Click the button to create your own poem!</p>
+
+  <div class="controls">
+    <label for="userLine">Add your own line:</label>
+    <input type="text" id="userLine" placeholder="e.g., I smile beneath the apple tree">
+
+    <label for="customRhyme">Choose a rhyming word (optional):</label>
+    <input type="text" id="customRhyme" placeholder="e.g., star">
+
+    <div>
+      <button onclick="generatePoem(false)">Make a Poem</button>
+      <button onclick="generatePoem(true)">Make a Rhyming Poem</button>
+      <button onclick="copyPoem()">Copy Poem</button>
+    </div>
+  </div>
+
+  <div class="poem-box" id="poemBox">
+    Your poem will appear here...
+  </div>
+
+  <audio id="chimeSound" src="magic_chime.mp3" preload="auto"></audio>
+
+  <script>
+    const additionalLines = [
+      "And that is how the tale begins.",
+      "The world grew quiet just to hear.",
+      "A gentle breeze carried the dream.",
+      "And colors danced through skies so clear.",
+      "Its echo sang from hill to hill.",
+      "And magic lingered in the air.",
+      "A whisper rode the curling breeze.",
+      "And sparkles shimmered everywhere."
+    ];
+
+    const rhymeGroups = [
+      { base: "tree", rhymes: ["bee", "sea", "free", "knee", "glee"], lines: ["A lion danced beside the tree", "Then leapt across the open {rhyme}"] },
+      { base: "star", rhymes: ["car", "far", "jar", "guitar", "bazaar"], lines: ["A fairy flew close to a star", "Then zipped away inside a {rhyme}"] },
+      { base: "night", rhymes: ["light", "kite", "flight", "bright", "sight"], lines: ["A dragon soared into the night", "Its wings aglow with golden {rhyme}"] },
+      { base: "moon", rhymes: ["spoon", "tune", "June", "balloon"], lines: ["The kitten howled beneath the moon", "Then danced along to a magic {rhyme}"] },
+      { base: "sky", rhymes: ["fly", "high", "sigh", "eye", "goodbye"], lines: ["A robot launched into the sky", "It waved hello and whispered {rhyme}"] },
+      { base: "snow", rhymes: ["glow", "flow", "go", "throw"], lines: ["A wizard painted scenes in snow", "Each brushstroke made the mountains {rhyme}"] },
+      { base: "rain", rhymes: ["train", "plain", "lane", "main"], lines: ["A unicorn danced in the rain", "And galloped through a candy {rhyme}"] },
+      { base: "play", rhymes: ["day", "way", "stay", "array"], lines: ["A penguin sang a tune of play", "And waddled in a joyful {rhyme}"] },
+      { base: "stream", rhymes: ["dream", "gleam", "beam", "team"], lines: ["A turtle glided down the stream", "Then vanished in a glowing {rhyme}"] },
+      { base: "light", rhymes: ["height", "bright", "night", "flight"], lines: ["A squirrel raced toward the light", "Its tail a blur of shining {rhyme}"] },
+      { base: "cake", rhymes: ["lake", "snake", "make", "break"], lines: ["A pirate searched for golden cake", "But found a castle near the {rhyme}"] },
+      { base: "ball", rhymes: ["hall", "call", "wall", "small"], lines: ["A puppy chased a bouncy ball", "It bounced into a rainbow {rhyme}"] },
+      { base: "fog", rhymes: ["log", "frog", "jog", "hog"], lines: ["A ghost emerged from swirling fog", "And danced around a talking {rhyme}"] },
+      { base: "door", rhymes: ["floor", "more", "roar", "core"], lines: ["An owl peeked behind the door", "And heard a tiny dragon {rhyme}"] },
+      { base: "sun", rhymes: ["fun", "run", "done", "won"], lines: ["A monkey played beneath the sun", "Its laughter echoed full of {rhyme}"] }
+    ];
+
+    function getRandomWord(array) {
+      return array[Math.floor(Math.random() * array.length)];
+    }
+
+    function generatePoem(rhyming) {
+      const userLine = document.getElementById("userLine").
