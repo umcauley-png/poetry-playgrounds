@@ -168,4 +168,70 @@
     }
 
     function generatePoem(rhyming) {
-      const userLine = document.getElementById("userLine").
+      const userLineInput = document.getElementById("userLine").value.trim();
+      const customRhymeInput = document.getElementById("customRhyme").value.trim().toLowerCase();
+
+      let poemLines = [];
+
+      // If user line is not empty, add it first (optional line)
+      if (userLineInput.length > 0) {
+        poemLines.push(userLineInput);
+      }
+
+      if (rhyming) {
+        // If rhyming poem, pick rhyme group
+        let rhymeGroup;
+
+        if (customRhymeInput) {
+          // Try to find rhyme group by custom rhyme base
+          rhymeGroup = rhymeGroups.find(group => group.base === customRhymeInput);
+        }
+
+        // If no rhyme group found, pick random
+        if (!rhymeGroup) {
+          rhymeGroup = getRandomWord(rhymeGroups);
+        }
+
+        // Pick a random rhyme word from rhymes list
+        const rhymeWord = getRandomWord(rhymeGroup.rhymes);
+
+        // Add the two rhyming lines, replacing {rhyme} with rhymeWord
+        rhymeGroup.lines.forEach(line => {
+          poemLines.push(line.replace("{rhyme}", rhymeWord));
+        });
+      } else {
+        // Non-rhyming poem: add 3 random additional lines
+        for (let i = 0; i < 3; i++) {
+          poemLines.push(getRandomWord(additionalLines));
+        }
+      }
+
+      // Display poem
+      const poemBox = document.getElementById("poemBox");
+      poemBox.textContent = poemLines.join("\n");
+
+      // Optional: play chime sound
+      const chime = document.getElementById("chimeSound");
+      if (chime) {
+        chime.play();
+      }
+
+      // Add bounce animation to poem box
+      poemBox.classList.remove("bounce");
+      void poemBox.offsetWidth; // trigger reflow to restart animation
+      poemBox.classList.add("bounce");
+    }
+
+    function copyPoem() {
+      const poemBox = document.getElementById("poemBox");
+      if (navigator.clipboard && poemBox.textContent.trim() !== "") {
+        navigator.clipboard.writeText(poemBox.textContent).then(() => {
+          alert("Poem copied to clipboard!");
+        });
+      } else {
+        alert("Nothing to copy!");
+      }
+    }
+  </script>
+</body>
+</html>
