@@ -22,13 +22,7 @@
       border-radius: 12px;
     }
 
-    p {
-      background-color: rgba(255, 255, 255, 0.7);
-      display: inline-block;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: bold;
-    }
+    /* Removed paragraph styling since text deleted */
 
     .poem-box {
       margin: 40px auto;
@@ -90,8 +84,10 @@
       font-weight: bold;
       display: block;
       margin-top: 10px;
+      color: white; /* changed labels to white */
     }
 
+    /* Sparkles styling */
     .sparkle {
       position: absolute;
       width: 20px;
@@ -100,6 +96,8 @@
       border-radius: 50%;
       opacity: 0.8;
       animation: twinkle 2s infinite;
+      pointer-events: none; /* So they don't interfere with clicking */
+      z-index: 1; /* Behind poem box */
     }
 
     @keyframes twinkle {
@@ -111,7 +109,7 @@
 <body>
 
   <h1>St Catherine's Poetry Playground</h1>
-  <p>Click the button to create your own poem!</p>
+  <!-- Removed the <p> "Click the button to create your own poem!" -->
 
   <div class="controls">
     <label for="userLine">Add your own line:</label>
@@ -232,6 +230,54 @@
         alert("Nothing to copy!");
       }
     }
+
+    // Sparkles logic: create sparkles around poem box
+    function createSparkles() {
+      const poemBox = document.getElementById("poemBox");
+      const sparkleCount = 12; // number of sparkles
+      for(let i = 0; i < sparkleCount; i++) {
+        const sparkle = document.createElement("div");
+        sparkle.classList.add("sparkle");
+        // Random position around poem box, slightly outside
+        // Use poemBox position + offset
+        const rect = poemBox.getBoundingClientRect();
+        const bodyRect = document.body.getBoundingClientRect();
+
+        // We position sparkles absolutely relative to body
+        // We'll place them randomly in a ring around poem box — outside by 20-50px
+
+        // Random angle
+        const angle = Math.random() * 2 * Math.PI;
+        // Random radius between 70 and 120 px from center of poem box
+        const radius = 70 + Math.random() * 50;
+
+        // Center of poem box relative to viewport + scroll
+        const centerX = rect.left + rect.width / 2 + window.pageXOffset;
+        const centerY = rect.top + rect.height / 2 + window.pageYOffset;
+
+        // Calculate sparkle position
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+
+        // Set position
+        sparkle.style.left = `${x}px`;
+        sparkle.style.top = `${y}px`;
+
+        document.body.appendChild(sparkle);
+      }
+    }
+
+    window.addEventListener("load", () => {
+      createSparkles();
+    });
+
+    // Optional: recreate sparkles on window resize (to reposition)
+    window.addEventListener("resize", () => {
+      // Remove old sparkles
+      document.querySelectorAll(".sparkle").forEach(el => el.remove());
+      createSparkles();
+    });
+
   </script>
 </body>
 </html>
