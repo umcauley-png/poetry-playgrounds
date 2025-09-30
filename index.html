@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>St Catherine's Poetry Playground — Random Only</title>
+  <title>St Catherine's Poetry Playground — Random with Rich Word Banks</title>
   <style>
     body {
       font-family: 'Avenir Next', 'Segoe UI', 'Helvetica Neue', sans-serif;
@@ -87,6 +87,26 @@
       background-color: #3a8a38;
     }
 
+    textarea {
+      margin-top: 20px;
+      width: 320px;
+      max-width: 90vw;
+      height: 80px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 2px solid #8bd3dd;
+      padding: 10px;
+      resize: vertical;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #172c66;
+    }
+
     #sparklesContainer {
       position: absolute;
       pointer-events: none;
@@ -123,6 +143,9 @@
     <div id="sparklesContainer"></div>
   </div>
 
+  <label for="userLine">Add your own line to the poem:</label>
+  <textarea id="userLine" placeholder="Type your line here..."></textarea>
+
   <div>
     <button onclick="generatePoem()">Make a Poem</button>
     <button id="copyButton" onclick="copyPoem()">Copy Poem</button>
@@ -132,9 +155,21 @@
 
   <script>
     const wordBanks = {
-      who: ["A dragon", "The moon", "A kitten", "A pirate", "A robot", "The sun", "A fairy", "A dinosaur", "A wizard", "A butterfly", "A mermaid", "A tiger", "An astronaut", "A ghost", "A squirrel"],
-      action: ["dances", "sings", "jumps", "giggles", "spins", "whispers", "paints", "stomps", "dreams", "twirls", "runs", "flies", "hides", "laughs", "swims"],
-      where: ["in the rain", "on a rainbow", "under the stars", "on a flying cloud", "through the jungle", "beside a waterfall", "with a magic brush", "in a puddle", "on a mountain top", "over a candy castle", "inside a treasure chest", "by the ocean", "in a secret garden", "on a sandy beach", "under the moonlight"]
+      who: [
+        "A dragon", "The moon", "A kitten", "A pirate", "A robot", "The sun", "A fairy", "A dinosaur", "A wizard", "A butterfly", "A mermaid", "A tiger", "An astronaut", "A ghost", "A squirrel",
+        "An elephant", "A hummingbird", "A penguin", "A fox", "A dolphin", "A lion", "A rabbit", "A bear"
+      ],
+      action: [
+        "dances", "sings", "jumps", "giggles", "spins", "whispers", "paints", "stomps", "dreams", "twirls", "runs", "flies", "hides", "laughs", "swims",
+        "roars", "wanders", "climbs", "glows", "rests", "soars", "prances", "howls"
+      ],
+      where: [
+        "in the rain", "on a rainbow", "under the stars", "on a flying cloud", "through the jungle", "beside a waterfall", "with a magic brush", "in a puddle", "on a mountain top", "over a candy castle", "inside a treasure chest", "by the ocean", "in a secret garden", "on a sandy beach", "under the moonlight",
+        "in tall grass", "on a drifting leaf", "under ancient trees", "by the river bend", "across the open plain", "in the Arctic snow", "beneath coral reefs"
+      ],
+      adjectives: [
+        "gentle", "shimmering", "restless", "ancient", "tiny", "gleaming", "wandering", "brave", "curious", "playful", "silent", "golden", "mighty", "glorious"
+      ]
     };
 
     const additionalLines = [
@@ -142,48 +177,33 @@
       "In a small pocket of wonder",
       "And everything whispers back",
       "As the night tilts its hat",
-      "Beneath a glittering hush"
+      "Beneath a glittering hush",
+      "When the world holds its breath",
+      "Where shadows learn to dance"
     ];
 
     function getRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-    function addAlliteration(line) {
-      const words = line.split(" ");
-      if (words.length > 1) {
-        const firstLetter = words[0][0].toLowerCase();
-        return words.map(w => w[0].toLowerCase() === firstLetter ? w : w).join(" ");
+    function maybeWithAdjective(word){
+      if(Math.random() < 0.5){
+        return getRandom(wordBanks.adjectives) + " " + word.toLowerCase();
       }
-      return line;
+      return word;
     }
 
-    function addRepetition(line) {
-      return line + ", " + line.toLowerCase();
-    }
-
-    function addPersonification(line) {
-      return line + " as if it had feelings";
-    }
-
-    function decorateLine(line) {
-      const decorators = [addAlliteration, addRepetition, addPersonification];
-      if (Math.random() < 0.5) {
-        const decorator = getRandom(decorators);
-        return decorator(line);
-      }
-      return line;
-    }
-
-    function generateRandomPoem(){
-      const line1 = decorateLine(getRandom(wordBanks.who));
-      const line2 = decorateLine(getRandom(wordBanks.action));
-      const line3 = decorateLine(getRandom(wordBanks.where));
+    function generateRandomPoem(userLine){
+      const line1 = maybeWithAdjective(getRandom(wordBanks.who));
+      const line2 = maybeWithAdjective(getRandom(wordBanks.action));
+      const line3 = maybeWithAdjective(getRandom(wordBanks.where));
       let lines = [line1, line2, line3];
-      lines.push(decorateLine(getRandom(additionalLines)));
+      if(userLine.trim()) lines.push(userLine.trim());
+      lines.push(getRandom(additionalLines));
       return lines.join("\n");
     }
 
     function generatePoem(){
-      const poemText = generateRandomPoem();
+      const userLine = document.getElementById('userLine').value;
+      const poemText = generateRandomPoem(userLine);
       const poemBox = document.getElementById('poemBox');
       poemBox.textContent = poemText;
       poemBox.classList.remove('bounce');
