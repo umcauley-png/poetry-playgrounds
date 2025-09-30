@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: 'Avenir Next', 'Segoe UI', 'Helvetica Neue', sans-serif;
-      background: url('https://github.com/umcauley-png/poetry-playgrounds/blob/main/Untitled%20design.png') no-repeat center center fixed;
+      background: url('https://raw.githubusercontent.com/umcauley-png/poetry-playgrounds/refs/heads/main/a%20playground%20that%20i%20can%20use%20as%20a%20background.jpg') no-repeat center center fixed;
       background-size: cover;
       color: #172c66;
       text-align: center;
@@ -37,24 +37,26 @@
     .poem-box {
       margin-top: 30px;
       font-size: 1.6rem;
-      background-color: rgba(214, 246, 214, 0.9);
-      border: 4px dashed #8bd3dd;
+      background-color: #fffefc;
       padding: 30px;
       border-radius: 15px;
       min-height: 160px;
-      width: 340px;
-      max-width: 90vw;
+      width: 380px;
+      max-width: 95vw;
       color: #172c66;
-      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+      box-shadow: 0 0 15px rgba(0,0,0,0.25);
       white-space: pre-line;
-      text-align: left;
+      text-align: center;
       position: relative;
+      box-sizing: border-box;
+      border: 12px solid transparent;
     }
 
     .poem-line {
       opacity: 0;
       transform: translateY(10px);
       animation: fadeInUp 0.8s forwards;
+      word-wrap: break-word;
     }
 
     @keyframes fadeInUp {
@@ -128,6 +130,14 @@
       "As mountains whisper low", "Where the horizon melts away", "As fireflies light the dark", "Where time forgets to move"
     ];
 
+    // Pool of frame images
+    const frames = [
+      "https://i.imgur.com/BLFvZfY.png",
+      "https://i.imgur.com/4Ih7Bbn.png",
+      "https://i.imgur.com/dnFXvbX.png",
+      "https://i.imgur.com/MxIjCOy.png"
+    ];
+
     function getRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
     function applyAlliteration(line) {
@@ -148,7 +158,7 @@
 
       lines = [line1, line2, line3, line4];
 
-      // Small chance of alliteration applied to ONE random line
+      // Rare alliteration
       if (Math.random() < 0.16) {
         const idx = Math.floor(Math.random() * lines.length);
         lines[idx] = applyAlliteration(lines[idx]);
@@ -170,6 +180,11 @@
         div.textContent = line;
         poemBox.appendChild(div);
       });
+
+      // 🎨 Apply a random frame
+      const frame = getRandom(frames);
+      poemBox.style.borderImage = `url('${frame}') 30 round`;
+
       const sound = document.getElementById("chimeSound");
       if(sound){ sound.currentTime=0; sound.play(); }
     }
@@ -181,14 +196,13 @@
 
     function savePoem(){
       const poemBox = document.getElementById("poemBox");
-      html2canvas(poemBox).then(canvas=>{
+      html2canvas(poemBox, {backgroundColor: "#fff"}).then(canvas=>{
         const link = document.createElement("a");
         link.download = "poem.png";
-        link.href = canvas.toDataURL();
+        link.href = canvas.toDataURL("image/png");
         link.click();
       });
     }
   </script>
 </body>
 </html>
-
