@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>St Catherine's Poetry Playground — Expanded Banks</title>
+  <title>St Catherine's Poetry Playground</title>
   <style>
     body {
       font-family: 'Avenir Next', 'Segoe UI', 'Helvetica Neue', sans-serif;
@@ -16,7 +16,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
     }
 
     h1 {
@@ -36,70 +35,52 @@
     }
 
     .poem-box {
-      margin-top: 40px;
-      font-size: 2rem;
+      margin-top: 30px;
+      font-size: 1.6rem;
       background-color: rgba(214, 246, 214, 0.9);
       border: 4px dashed #8bd3dd;
       padding: 30px;
       border-radius: 15px;
-      min-height: 140px;
-      width: 360px;
+      min-height: 160px;
+      width: 340px;
       max-width: 90vw;
-      position: relative;
       color: #172c66;
       box-shadow: 0 0 12px rgba(0,0,0,0.15);
       white-space: pre-line;
-      user-select: text;
+      text-align: left;
+      position: relative;
     }
 
-    .bounce { animation: bounce 0.6s; }
-    @keyframes bounce {
-      0% { transform: scale(1); }
-      30% { transform: scale(1.1); }
-      50% { transform: scale(0.95); }
-      70% { transform: scale(1.05); }
-      100% { transform: scale(1); }
+    .poem-line {
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeInUp 0.8s forwards;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     button {
       background-color: #ffb703;
       border: none;
       padding: 15px 30px;
-      font-size: 1.5rem;
-      margin: 15px 10px 30px 10px;
+      font-size: 1.2rem;
+      margin: 15px 8px;
       border-radius: 10px;
       cursor: pointer;
       transition: background 0.3s ease;
       font-family: inherit;
     }
+
     button:hover { background-color: #fb8500; }
 
     #copyButton { background-color: #4caf50; }
     #copyButton:hover { background-color: #3a8a38; }
 
-    #sparklesContainer {
-      position: absolute;
-      pointer-events: none;
-      width: 350px;
-      height: 180px;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      border-radius: 15px;
-      overflow: visible;
-      z-index: 10;
-    }
-    .sparkle {
-      position: absolute;
-      border-radius: 50%;
-      opacity: 0.8;
-      animation: twinkle 2s infinite ease-in-out;
-      filter: drop-shadow(0 0 2px currentColor);
-    }
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.8; }
-      50% { opacity: 0.2; }
-    }
+    #saveButton { background-color: #219ebc; color: white; }
+    #saveButton:hover { background-color: #126782; }
   </style>
 </head>
 <body>
@@ -108,143 +89,105 @@
 
   <div class="poem-box" id="poemBox">
     Your poem will appear here...
-    <div id="sparklesContainer"></div>
   </div>
 
   <div>
     <button onclick="generatePoem()">Make a Poem</button>
     <button id="copyButton" onclick="copyPoem()">Copy Poem</button>
+    <button id="saveButton" onclick="savePoem()">Save as Image</button>
   </div>
 
   <audio id="chimeSound" src="magic_chime.mp3" preload="auto"></audio>
 
+  <!-- html2canvas for saving poems -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
   <script>
     const wordBanks = {
       who: [
-        "a shimmering fox", "the golden eagle", "a quiet rabbit", "the wandering wolf",
-        "a glowing jellyfish", "the restless river", "a playful dolphin", "the silver moon",
-        "an ancient oak", "the laughing child", "a gentle deer", "the whispering wind",
-        "a clever cat", "the proud lion", "a tiny turtle", "the curious owl",
-        "a glowing star", "the brave bear", "a buzzing bee", "the dancing flame"
+        "A shimmering fox", "The restless river", "A golden eagle", "The playful otter", "A silver wolf",
+        "The gentle giant whale", "A curious cat", "The soaring falcon", "A striped tiger", "The glowing firefly"
       ],
       action: [
-        "dances softly", "sings brightly", "jumps high", "giggles loudly",
-        "spins quickly", "whispers gently", "paints boldly", "stomps wildly",
-        "dreams quietly", "twirls gracefully", "runs swiftly", "flies high",
-        "hides shyly", "laughs loudly", "swims slowly", "glides gracefully",
-        "soars boldly", "tiptoes silently", "bursts joyfully", "wanders freely"
+        "glides gracefully", "dances wildly", "bursts with laughter", "soars boldly", "tiptoes silently",
+        "hums a secret song", "stomps playfully", "twirls in delight", "dreams quietly", "spins in wonder"
       ],
       where: [
-        "in the golden savanna", "on a rainbow bridge", "under the starlit sky",
-        "on a drifting cloud", "through the misty jungle", "beside a waterfall",
-        "with a magic brush", "in a sparkling puddle", "on a mountain peak",
-        "over a candy castle", "inside a treasure chest", "by the wide ocean",
-        "in a secret garden", "on a sandy shore", "beneath the moonlight",
-        "through the snowy tundra", "within the coral reef", "under the ancient oak",
-        "in the desert dunes", "across the rolling meadow"
+        "beneath the endless sky", "in the golden savanna", "through the jungle canopy", "by the coral reef",
+        "under the frosted moon", "beside the quiet stream", "across the rolling hills", "within the secret garden",
+        "along the desert sands", "underneath the tall pines"
       ]
     };
 
     const additionalLines = [
-  "Where dreams take flight",
-  "In a world of wonder",
-  "With magic in the air",
-  "As the night softly falls",
-  "Beneath the sparkling sky",
-  "Until the morning wakes",
-  "Where silence hums with light",
-  "As rivers sing their song",
-  "While shadows gently fade",
-  "Where laughter paints the air",
-  "Until the stars grow tired",
-  "Where the earth holds its breath",
-  "As dawn begins to glow",
-  "As the meadow drifts to sleep",
-  "Where oceans guard their secrets",
-  "Until the golden sun returns",
-  "As mountains whisper low",
-  "Where the horizon melts away",
-  "Until tomorrow’s song begins",
-  "As fireflies light the dark",
-  "Where time forgets to move"
-  "When whispers meet the wind",
-  "Where colours start to bloom"
-];
+      "Where dreams take flight", "In a world of wonder", "With magic in the air", "As the night softly falls",
+      "Beneath the sparkling sky", "Until the morning wakes", "Where silence hums with light", "As rivers sing their song",
+      "While shadows gently fade", "Where laughter paints the air", "Until the stars grow tired", "As dawn begins to glow",
+      "When whispers meet the wind", "Where colors start to bloom",
+      "As the meadow drifts to sleep", "Where oceans guard their secrets", "Until the golden sun returns",
+      "As mountains whisper low", "Where the horizon melts away", "As fireflies light the dark", "Where time forgets to move"
+    ];
 
+    function getRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-    function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
-    function maybeAlliterate(line) {
-      if (Math.random() < 0.16) { // ~1 in 6 poems
-        const words = line.split(" ");
-        if (words.length > 2) {
-          const first = words[1][0].toLowerCase();
-          words[1] = words[1].replace(/^[a-z]/i, first + first);
-        }
-        return words.join(" ");
+    function applyAlliteration(line) {
+      const words = line.split(" ");
+      if (words.length > 2) {
+        const letter = words[1][0].toLowerCase();
+        return words.map((w,i)=> (i>0 && w[0].toLowerCase()===letter? w.toUpperCase(): w)).join(" ");
       }
       return line;
     }
 
-    function generateRandomPoem() {
-      let lines = [
-        getRandom(wordBanks.who),
-        getRandom(wordBanks.action),
-        getRandom(wordBanks.where),
-        getRandom(additionalLines)
-      ];
-      // Apply alliteration occasionally
+    function generateRandomPoem(){
+      let lines = [];
+      const line1 = getRandom(wordBanks.who);
+      const line2 = getRandom(wordBanks.action);
+      const line3 = getRandom(wordBanks.where);
+      const line4 = getRandom(additionalLines);
+
+      lines = [line1, line2, line3, line4];
+
+      // Small chance of alliteration applied to ONE random line
       if (Math.random() < 0.16) {
         const idx = Math.floor(Math.random() * lines.length);
-        lines[idx] = maybeAlliterate(lines[idx]);
+        lines[idx] = applyAlliteration(lines[idx]);
       }
-      // Ensure capitalization on first line
+
+      // Capitalize first line
       lines[0] = lines[0].charAt(0).toUpperCase() + lines[0].slice(1);
-      return lines.join("\n");
+      return lines;
     }
 
-    function generatePoem() {
-      const poemText = generateRandomPoem();
+    function generatePoem(){
       const poemBox = document.getElementById('poemBox');
-      poemBox.textContent = poemText;
-      poemBox.classList.remove('bounce');
-      void poemBox.offsetWidth;
-      poemBox.classList.add('bounce');
+      poemBox.innerHTML = "";
+      const lines = generateRandomPoem();
+      lines.forEach((line, i) => {
+        const div = document.createElement("div");
+        div.className = "poem-line";
+        div.style.animationDelay = `${i*0.8}s`;
+        div.textContent = line;
+        poemBox.appendChild(div);
+      });
       const sound = document.getElementById("chimeSound");
-      if (sound) { sound.currentTime = 0; sound.play(); }
+      if(sound){ sound.currentTime=0; sound.play(); }
     }
 
-    function copyPoem() {
-      const text = document.getElementById('poemBox').textContent;
-      navigator.clipboard.writeText(text).then(() => alert('Poem copied!'));
+    function copyPoem(){
+      const text = [...document.querySelectorAll(".poem-line")].map(el=>el.textContent).join("\n");
+      navigator.clipboard.writeText(text).then(()=>alert('Poem copied!'));
     }
 
-    function createSparkles() {
-      const container = document.getElementById('sparklesContainer');
-      container.innerHTML = '';
-      const colors = ['#FFD700','#FF69B4','#00FFFF','#FF4500','#7CFC00','#FF00FF'];
-      for (let i=0; i<20; i++) {
-        const sparkle = document.createElement('div');
-        sparkle.classList.add('sparkle');
-        sparkle.style.width = sparkle.style.height = `${Math.random()*8+4}px`;
-        sparkle.style.backgroundColor = getRandom(colors);
-        const edge = Math.floor(Math.random()*4);
-        let x, y;
-        switch(edge) {
-          case 0: x = Math.random()*container.clientWidth; y = Math.random()*10; break;
-          case 1: x = container.clientWidth-Math.random()*10; y = Math.random()*container.clientHeight; break;
-          case 2: x = Math.random()*container.clientWidth; y = container.clientHeight-Math.random()*10; break;
-          case 3: x = Math.random()*10; y = Math.random()*container.clientHeight; break;
-        }
-        sparkle.style.left = `${x}px`;
-        sparkle.style.top = `${y}px`;
-        sparkle.style.animationDuration = (Math.random()*2+1)+'s';
-        container.appendChild(sparkle);
-      }
+    function savePoem(){
+      const poemBox = document.getElementById("poemBox");
+      html2canvas(poemBox).then(canvas=>{
+        const link = document.createElement("a");
+        link.download = "poem.png";
+        link.href = canvas.toDataURL();
+        link.click();
+      });
     }
-
-    window.addEventListener('load', createSparkles);
-    window.addEventListener('resize', createSparkles);
   </script>
 </body>
 </html>
