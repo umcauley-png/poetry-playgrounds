@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>St Catherine's Poetry Playground — Expanded Random</title>
+  <title>St Catherine's Poetry Playground — Random Only</title>
   <style>
     body {
       font-family: 'Avenir Next', 'Segoe UI', 'Helvetica Neue', sans-serif;
@@ -42,8 +42,8 @@
       border: 4px dashed #8bd3dd;
       padding: 30px;
       border-radius: 15px;
-      min-height: 140px;
-      width: 340px;
+      min-height: 160px;
+      width: 380px;
       max-width: 90vw;
       position: relative;
       color: #172c66;
@@ -52,7 +52,10 @@
       user-select: text;
     }
 
-    .bounce { animation: bounce 0.6s; }
+    .bounce {
+      animation: bounce 0.6s;
+    }
+
     @keyframes bounce {
       0% { transform: scale(1); }
       30% { transform: scale(1.1); }
@@ -65,17 +68,24 @@
       background-color: #ffb703;
       border: none;
       padding: 15px 30px;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       margin: 15px 10px 30px 10px;
       border-radius: 10px;
       cursor: pointer;
       transition: background 0.3s ease;
       font-family: inherit;
     }
-    button:hover { background-color: #fb8500; }
 
-    #copyButton { background-color: #4caf50; }
-    #copyButton:hover { background-color: #3a8a38; }
+    button:hover {
+      background-color: #fb8500;
+    }
+
+    #copyButton {
+      background-color: #4caf50;
+    }
+    #copyButton:hover {
+      background-color: #3a8a38;
+    }
 
     #sparklesContainer {
       position: absolute;
@@ -89,6 +99,7 @@
       overflow: visible;
       z-index: 10;
     }
+
     .sparkle {
       position: absolute;
       border-radius: 50%;
@@ -96,6 +107,7 @@
       animation: twinkle 2s infinite ease-in-out;
       filter: drop-shadow(0 0 2px currentColor);
     }
+
     @keyframes twinkle {
       0%, 100% { opacity: 0.8; }
       50% { opacity: 0.2; }
@@ -119,44 +131,47 @@
   <audio id="chimeSound" src="magic_chime.mp3" preload="auto"></audio>
 
   <script>
+    // Expanded word banks
     const wordBanks = {
-      adjectives: [
-        "gentle","brave","curious","fuzzy","striped","golden","glittering","tiny",
-        "massive","furry","playful","lonely","shimmering","sly","sleepy","swift",
-        "ancient","wild","fluffy","mysterious"
-      ],
       who: [
-        "a dragon","an owl","a tiger","a squirrel","a rabbit","a bear","a mermaid",
-        "a wizard","a fox","a butterfly","a dolphin","an astronaut","a pirate",
-        "a robot","a fairy","a dinosaur","a turtle","a kitten","a puppy","a penguin"
+        "A gentle lion", "The striped zebra", "A wise old owl", "The playful dolphin",
+        "A tiny mouse", "The glowing firefly", "A brave explorer", "The curious cat",
+        "A glittering dragon", "The silver moon", "A laughing child", "The golden eagle",
+        "A clever fox", "The quiet turtle", "A singing mermaid", "The mighty elephant",
+        "A wandering star", "The dancing bear", "A shy unicorn", "The red kangaroo"
       ],
       action: [
-        "dances","sings","jumps","giggles","spins","whispers","paints","stomps",
-        "dreams","twirls","runs","flies","hides","laughs","swims","climbs","glides",
-        "tiptoes","shuffles","bounces"
+        "dances swiftly", "sings softly", "jumps high", "giggles loudly",
+        "spins gracefully", "whispers gently", "paints wildly", "stomps proudly",
+        "dreams deeply", "twirls endlessly", "runs quickly", "flies silently",
+        "hides quietly", "laughs brightly", "swims smoothly", "roars boldly",
+        "hums sweetly", "tiptoes carefully", "glows warmly", "wanders freely"
       ],
       where: [
-        "in the rain","on a rainbow","under the stars","on a flying cloud",
-        "through the jungle","beside a waterfall","with a magic brush","in a puddle",
-        "on a mountain top","over a candy castle","inside a treasure chest",
-        "by the ocean","in a secret garden","on a sandy beach","under the moonlight",
-        "in the forest","across the desert","at the edge of the world","in the meadow",
-        "on the ice"
+        "in the lush jungle", "on a rainbow path", "under the twinkling stars",
+        "through the misty forest", "beside a sparkling waterfall",
+        "with a golden brush", "in a quiet burrow", "on a snowy mountain top",
+        "over a candy castle", "inside a coral reef", "by the wide ocean",
+        "in a secret garden", "on a sandy savanna", "under the glowing moonlight",
+        "across the windy desert", "inside a crystal cave",
+        "on the frozen tundra", "beneath the jungle canopy",
+        "beside the tall cliffs", "through the grassy meadow"
       ]
     };
 
     const additionalLines = [
       "Where dreams come alive",
-      "In a small pocket of wonder",
+      "In a pocket full of wonder",
       "And everything whispers back",
       "As the night tilts its hat",
       "Beneath a glittering hush",
-      "Until morning breaks the spell",
-      "A secret no one tells",
-      "As if tomorrow waits to sing"
+      "Where secrets hide in shadows",
+      "As the morning stretches awake",
+      "And hope begins to bloom"
     ];
 
-    const personificationPhrases = [
+    // Small pool of poetic devices
+    const personifications = [
       "as if it had feelings",
       "whispering secrets to the wind",
       "humming with hidden dreams",
@@ -166,39 +181,42 @@
 
     function getRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-    function maybeApplyDevice(line){
-      // Only apply devices about 1 in 6 times
-      if(Math.random() > 0.16) return line;
-
-      if(Math.random() < 0.5){
-        // Alliteration: repeat first letter words
-        const words = line.split(" ");
-        if(words.length > 1){
-          const firstLetter = words[1][0].toLowerCase();
-          return line + ", " + firstLetter + firstLetter + firstLetter + "...";
+    function applyDevice(line) {
+      // About 1 in 6 poems will get a device on one line
+      if (Math.random() < (1/6)) {
+        if (Math.random() < 0.5) {
+          // Personification
+          return line + ", " + getRandom(personifications);
+        } else {
+          // Alliteration (repeat first letter)
+          const words = line.split(" ");
+          if (words.length > 1) {
+            const firstLetter = words[1][0].toLowerCase();
+            return line + " " + firstLetter + firstLetter + firstLetter;
+          }
         }
-      } else {
-        // Personification
-        return line + " " + getRandom(personificationPhrases);
       }
       return line;
     }
 
-    function generateRandomPoem(){
-      const adj = getRandom(wordBanks.adjectives);
-      const who = getRandom(wordBanks.who);
-      const action = getRandom(wordBanks.action);
-      const where = getRandom(wordBanks.where);
+    function capitalizeFirst(line) {
+      return line.charAt(0).toUpperCase() + line.slice(1);
+    }
 
+    function generateRandomPoem(){
       let lines = [
-        `The ${adj} ${who}`,
-        `${action} ${where}`,
+        getRandom(wordBanks.who),
+        getRandom(wordBanks.action),
+        getRandom(wordBanks.where),
         getRandom(additionalLines)
       ];
 
-      // Randomly apply a device to one of the lines
+      // Ensure only one device per poem at most
       const deviceIndex = Math.floor(Math.random() * lines.length);
-      lines[deviceIndex] = maybeApplyDevice(lines[deviceIndex]);
+      lines[deviceIndex] = applyDevice(lines[deviceIndex]);
+
+      // Capitalize the first line
+      lines[0] = capitalizeFirst(lines[0]);
 
       return lines.join("\n");
     }
