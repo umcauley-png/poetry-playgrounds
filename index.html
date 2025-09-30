@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>St Catherine's Poetry Playground</title>
   <style>
     body {
@@ -11,32 +12,45 @@
       background-size: cover;
       color: #172c66;
       text-align: center;
-      padding: 40px;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
     }
 
     h1 {
       color: #f582ae;
-      background-color: rgba(255, 255, 255, 0.9);
+      background-color: rgba(255, 255, 255, 0.8);
       display: inline-block;
       padding: 10px 20px;
       border-radius: 12px;
+      margin-bottom: 0.2em;
     }
 
-    /* Removed paragraph styling since text deleted */
+    p#subtitle {
+      margin-top: 0;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #444;
+    }
 
     .poem-box {
-      margin: 40px auto;
-      font-size: 1.8rem;
-      background-color: rgba(214, 246, 214, 0.95);
+      margin-top: 40px;
+      font-size: 2rem;
+      background-color: rgba(214, 246, 214, 0.9);
       border: 4px dashed #8bd3dd;
       padding: 30px;
       border-radius: 15px;
       min-height: 140px;
-      transition: transform 0.3s ease;
+      width: 320px;
+      max-width: 90vw;
       position: relative;
-      width: 90%;
-      max-width: 600px;
-      z-index: 2;
+      color: #172c66;
+      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+      white-space: pre-line;
+      user-select: text;
     }
 
     .bounce {
@@ -51,16 +65,12 @@
       100% { transform: scale(1); }
     }
 
-    .controls {
-      margin: 20px 0;
-    }
-
     button {
       background-color: #ffb703;
       border: none;
       padding: 15px 30px;
-      font-size: 1.2rem;
-      margin: 10px;
+      font-size: 1.5rem;
+      margin: 15px 10px 30px 10px;
       border-radius: 10px;
       cursor: pointer;
       transition: background 0.3s ease;
@@ -71,213 +81,277 @@
       background-color: #fb8500;
     }
 
-    input[type="text"] {
-      padding: 10px;
+    #copyButton {
+      background-color: #4caf50;
+    }
+    #copyButton:hover {
+      background-color: #3a8a38;
+    }
+
+    textarea {
+      margin-top: 20px;
+      width: 320px;
+      max-width: 90vw;
+      height: 80px;
       font-size: 1rem;
-      width: 250px;
       border-radius: 8px;
-      border: 1px solid #ccc;
-      margin: 10px;
+      border: 2px solid #8bd3dd;
+      padding: 10px;
+      resize: vertical;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     label {
-      font-weight: bold;
       display: block;
-      margin-top: 10px;
-      color: white; /* changed labels to white */
+      margin-top: 20px;
+      font-weight: bold;
+      color: #172c66;
     }
 
-    /* Sparkles styling */
+    select {
+      margin-top: 10px;
+      font-size: 1rem;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 2px solid #8bd3dd;
+      cursor: pointer;
+    }
+
+    /* Sparkles container */
+    #sparklesContainer {
+      position: absolute;
+      pointer-events: none;
+      width: 350px;
+      height: 180px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 15px;
+      overflow: visible;
+      z-index: 10;
+    }
+
     .sparkle {
       position: absolute;
-      width: 20px;
-      height: 20px;
-      background: radial-gradient(circle, #ffb3ec, #ffc6ff, #bdb2ff, #a0c4ff);
       border-radius: 50%;
       opacity: 0.8;
-      animation: twinkle 2s infinite;
-      pointer-events: none; /* So they don't interfere with clicking */
-      z-index: 1; /* Behind poem box */
+      animation: twinkle 2s infinite ease-in-out;
+      filter: drop-shadow(0 0 2px currentColor);
     }
 
     @keyframes twinkle {
-      0%, 100% { opacity: 0.8; transform: scale(1); }
-      50% { opacity: 0.2; transform: scale(1.3); }
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 0.2; }
     }
   </style>
 </head>
 <body>
 
   <h1>St Catherine's Poetry Playground</h1>
-  <!-- Removed the <p> "Click the button to create your own poem!" -->
-
-  <div class="controls">
-    <label for="userLine">Add your own line:</label>
-    <input type="text" id="userLine" placeholder="e.g., I smile beneath the apple tree">
-
-    <label for="customRhyme">Choose a rhyming word (optional):</label>
-    <input type="text" id="customRhyme" placeholder="e.g., star">
-
-    <div>
-      <button onclick="generatePoem(false)">Make a Poem</button>
-      <button onclick="generatePoem(true)">Make a Rhyming Poem</button>
-      <button onclick="copyPoem()">Copy Poem</button>
-    </div>
-  </div>
+  <p id="subtitle">Click the button to create your own poem!</p>
 
   <div class="poem-box" id="poemBox">
     Your poem will appear here...
+    <div id="sparklesContainer"></div>
   </div>
 
+  <label for="userLine">Add your own line to the poem:</label>
+  <textarea id="userLine" placeholder="Type your line here..."></textarea>
+
+  <label for="poemType">Choose poem type:</label>
+  <select id="poemType">
+    <option value="random">Random Poem</option>
+    <option value="rhyming">Rhyming Poem</option>
+  </select>
+
+  <div>
+    <button onclick="generatePoem()">Make a Poem</button>
+    <button id="copyButton" onclick="copyPoem()">Copy Poem</button>
+  </div>
+
+  <!-- Audio element -->
   <audio id="chimeSound" src="magic_chime.mp3" preload="auto"></audio>
 
   <script>
-    const additionalLines = [
-      "And that is how the tale begins.",
-      "The world grew quiet just to hear.",
-      "A gentle breeze carried the dream.",
-      "And colors danced through skies so clear.",
-      "Its echo sang from hill to hill.",
-      "And magic lingered in the air.",
-      "A whisper rode the curling breeze.",
-      "And sparkles shimmered everywhere."
+    // Word banks
+    const who = [
+      "A dragon", "The moon", "A kitten", "A pirate", "A robot",
+      "The sun", "A fairy", "A dinosaur", "A wizard", "A butterfly",
+      "A mermaid", "A tiger", "An astronaut", "A ghost", "A squirrel"
     ];
 
-    const rhymeGroups = [
-      { base: "tree", rhymes: ["bee", "sea", "free", "knee", "glee"], lines: ["A lion danced beside the tree", "Then leapt across the open {rhyme}"] },
-      { base: "star", rhymes: ["car", "far", "jar", "guitar", "bazaar"], lines: ["A fairy flew close to a star", "Then zipped away inside a {rhyme}"] },
-      { base: "night", rhymes: ["light", "kite", "flight", "bright", "sight"], lines: ["A dragon soared into the night", "Its wings aglow with golden {rhyme}"] },
-      { base: "moon", rhymes: ["spoon", "tune", "June", "balloon"], lines: ["The kitten howled beneath the moon", "Then danced along to a magic {rhyme}"] },
-      { base: "sky", rhymes: ["fly", "high", "sigh", "eye", "goodbye"], lines: ["A robot launched into the sky", "It waved hello and whispered {rhyme}"] },
-      { base: "snow", rhymes: ["glow", "flow", "go", "throw"], lines: ["A wizard painted scenes in snow", "Each brushstroke made the mountains {rhyme}"] },
-      { base: "rain", rhymes: ["train", "plain", "lane", "main"], lines: ["A unicorn danced in the rain", "And galloped through a candy {rhyme}"] },
-      { base: "play", rhymes: ["day", "way", "stay", "array"], lines: ["A penguin sang a tune of play", "And waddled in a joyful {rhyme}"] },
-      { base: "stream", rhymes: ["dream", "gleam", "beam", "team"], lines: ["A turtle glided down the stream", "Then vanished in a glowing {rhyme}"] },
-      { base: "light", rhymes: ["height", "bright", "night", "flight"], lines: ["A squirrel raced toward the light", "Its tail a blur of shining {rhyme}"] },
-      { base: "cake", rhymes: ["lake", "snake", "make", "break"], lines: ["A pirate searched for golden cake", "But found a castle near the {rhyme}"] },
-      { base: "ball", rhymes: ["hall", "call", "wall", "small"], lines: ["A puppy chased a bouncy ball", "It bounced into a rainbow {rhyme}"] },
-      { base: "fog", rhymes: ["log", "frog", "jog", "hog"], lines: ["A ghost emerged from swirling fog", "And danced around a talking {rhyme}"] },
-      { base: "door", rhymes: ["floor", "more", "roar", "core"], lines: ["An owl peeked behind the door", "And heard a tiny dragon {rhyme}"] },
-      { base: "sun", rhymes: ["fun", "run", "done", "won"], lines: ["A monkey played beneath the sun", "Its laughter echoed full of {rhyme}"] }
+    const doingWhat = [
+      "dances", "sings", "jumps", "giggles", "spins",
+      "whispers", "paints", "stomps", "dreams", "twirls",
+      "runs", "flies", "hides", "laughs", "swims"
     ];
+
+    const whereHow = [
+      "in the rain", "on a rainbow", "under the stars",
+      "on a flying cloud", "through the jungle", "beside a waterfall",
+      "with a magic brush", "in a puddle", "on a mountain top",
+      "over a candy castle", "inside a treasure chest", "by the ocean",
+      "in a secret garden", "on a sandy beach", "under the moonlight"
+    ];
+
+    // Additional lines
+    const additionalLines = [
+      "Where dreams come alive",
+      "In a world of wonder",
+      "With magic in the air",
+      "As the night softly falls",
+      "Beneath the sparkling sky"
+    ];
+
+    // Rhyming pairs for simple rhyme scheme
+    const rhymePairs = {
+      "cat": ["hat", "bat", "mat", "rat"],
+      "moon": ["soon", "June", "tune", "spoon"],
+      "star": ["far", "car", "jar", "guitar"],
+      "fly": ["sky", "high", "bye", "sigh"],
+      "rain": ["train", "pain", "lane", "main"],
+      "light": ["night", "flight", "bright", "kite"],
+      "dream": ["beam", "stream", "gleam", "team"],
+      "sea": ["be", "free", "tree", "key"],
+      "game": ["flame", "name", "fame", "same"],
+      "king": ["sing", "ring", "wing", "thing"]
+    };
 
     function getRandomWord(array) {
       return array[Math.floor(Math.random() * array.length)];
     }
 
-    function generatePoem(rhyming) {
-      const userLineInput = document.getElementById("userLine").value.trim();
-      const customRhymeInput = document.getElementById("customRhyme").value.trim().toLowerCase();
+    function getRandomKey(obj) {
+      const keys = Object.keys(obj);
+      return keys[Math.floor(Math.random() * keys.length)];
+    }
 
-      let poemLines = [];
+    // Generate rhyming poem: two lines where last words rhyme, plus user line if provided
+    function generateRhymingPoem(userLine) {
+      // Pick a rhyme base word and its rhymes
+      const rhymeBase = getRandomKey(rhymePairs);
+      const rhymes = rhymePairs[rhymeBase];
+      // Line 1 and 2 last words are rhymeBase and a rhyme from rhymes array
+      const line1 = `The ${rhymeBase} likes to play`;
+      const rhymeWord = getRandomWord(rhymes);
+      const line2 = `And sings a tune all day with a ${rhymeWord}`;
 
-      // If user line is not empty, add it first (optional line)
-      if (userLineInput.length > 0) {
-        poemLines.push(userLineInput);
+      // Build poem lines array
+      let poemLines = [line1, line2];
+
+      // Add user line if provided and not empty
+      if (userLine.trim()) {
+        poemLines.push(userLine.trim());
       }
 
-      if (rhyming) {
-        // If rhyming poem, pick rhyme group
-        let rhymeGroup;
+      // Optionally add one additional line for more length
+      poemLines.push(getRandomWord(additionalLines));
 
-        if (customRhymeInput) {
-          // Try to find rhyme group by custom rhyme base
-          rhymeGroup = rhymeGroups.find(group => group.base === customRhymeInput);
+      return poemLines.join('\n');
+    }
+
+    // Generate random poem, plus user line if provided
+    function generateRandomPoem(userLine) {
+      const line1 = getRandomWord(who);
+      const line2 = getRandomWord(doingWhat);
+      const line3 = getRandomWord(whereHow);
+      let poemLines = [line1, line2, line3];
+
+      if (userLine.trim()) {
+        poemLines.push(userLine.trim());
+      }
+
+      poemLines.push(getRandomWord(additionalLines));
+      return poemLines.join('\n');
+    }
+
+    // Generate sparkles around poem box edges
+    function createSparkles() {
+      const container = document.getElementById('sparklesContainer');
+      container.innerHTML = ''; // clear previous
+
+      const colors = ['#FFD700', '#FF69B4', '#00FFFF', '#FF4500', '#7CFC00', '#FF00FF'];
+      const sparkleCount = 20;
+
+      for (let i = 0; i < sparkleCount; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.classList.add('sparkle');
+        sparkle.style.width = sparkle.style.height = `${Math.random() * 8 + 4}px`;
+        sparkle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+        // Random position along edges (top, bottom, left, right)
+        const edge = Math.floor(Math.random() * 4);
+        let x, y;
+        switch(edge) {
+          case 0: // top edge
+            x = Math.random() * container.clientWidth;
+            y = Math.random() * 10;
+            break;
+          case 1: // right edge
+            x = container.clientWidth - Math.random() * 10;
+            y = Math.random() * container.clientHeight;
+            break;
+          case 2: // bottom edge
+            x = Math.random() * container.clientWidth;
+            y = container.clientHeight - Math.random() * 10;
+            break;
+          case 3: // left edge
+            x = Math.random() * 10;
+            y = Math.random() * container.clientHeight;
+            break;
         }
+        sparkle.style.left = `${x}px`;
+        sparkle.style.top = `${y}px`;
+        sparkle.style.animationDuration = (Math.random() * 2 + 1) + 's';
+        container.appendChild(sparkle);
+      }
+    }
 
-        // If no rhyme group found, pick random
-        if (!rhymeGroup) {
-          rhymeGroup = getRandomWord(rhymeGroups);
-        }
+    function generatePoem() {
+      const poemType = document.getElementById('poemType').value;
+      const userLine = document.getElementById('userLine').value;
 
-        // Pick a random rhyme word from rhymes list
-        const rhymeWord = getRandomWord(rhymeGroup.rhymes);
-
-        // Add the two rhyming lines, replacing {rhyme} with rhymeWord
-        rhymeGroup.lines.forEach(line => {
-          poemLines.push(line.replace("{rhyme}", rhymeWord));
-        });
+      let poemText = '';
+      if (poemType === 'rhyming') {
+        poemText = generateRhymingPoem(userLine);
       } else {
-        // Non-rhyming poem: add 3 random additional lines
-        for (let i = 0; i < 3; i++) {
-          poemLines.push(getRandomWord(additionalLines));
-        }
+        poemText = generateRandomPoem(userLine);
       }
 
-      // Display poem
-      const poemBox = document.getElementById("poemBox");
-      poemBox.textContent = poemLines.join("\n");
+      const poemBox = document.getElementById('poemBox');
+      poemBox.textContent = poemText;
 
-      // Optional: play chime sound
-      const chime = document.getElementById("chimeSound");
-      if (chime) {
-        chime.play();
+      poemBox.classList.remove('bounce');
+      void poemBox.offsetWidth; // trigger reflow
+      poemBox.classList.add('bounce');
+
+      // Play sound
+      const sound = document.getElementById("chimeSound");
+      if(sound) {
+        sound.currentTime = 0;
+        sound.play();
       }
-
-      // Add bounce animation to poem box
-      poemBox.classList.remove("bounce");
-      void poemBox.offsetWidth; // trigger reflow to restart animation
-      poemBox.classList.add("bounce");
     }
 
     function copyPoem() {
-      const poemBox = document.getElementById("poemBox");
-      if (navigator.clipboard && poemBox.textContent.trim() !== "") {
-        navigator.clipboard.writeText(poemBox.textContent).then(() => {
-          alert("Poem copied to clipboard!");
-        });
-      } else {
-        alert("Nothing to copy!");
-      }
+      const poemBox = document.getElementById('poemBox');
+      const text = poemBox.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Poem copied to clipboard!');
+      }, () => {
+        alert('Failed to copy poem.');
+      });
     }
 
-    // Sparkles logic: create sparkles around poem box
-    function createSparkles() {
-      const poemBox = document.getElementById("poemBox");
-      const sparkleCount = 12; // number of sparkles
-      for(let i = 0; i < sparkleCount; i++) {
-        const sparkle = document.createElement("div");
-        sparkle.classList.add("sparkle");
-        // Random position around poem box, slightly outside
-        // Use poemBox position + offset
-        const rect = poemBox.getBoundingClientRect();
-        const bodyRect = document.body.getBoundingClientRect();
-
-        // We position sparkles absolutely relative to body
-        // We'll place them randomly in a ring around poem box — outside by 20-50px
-
-        // Random angle
-        const angle = Math.random() * 2 * Math.PI;
-        // Random radius between 70 and 120 px from center of poem box
-        const radius = 70 + Math.random() * 50;
-
-        // Center of poem box relative to viewport + scroll
-        const centerX = rect.left + rect.width / 2 + window.pageXOffset;
-        const centerY = rect.top + rect.height / 2 + window.pageYOffset;
-
-        // Calculate sparkle position
-        const x = centerX + radius * Math.cos(angle);
-        const y = centerY + radius * Math.sin(angle);
-
-        // Set position
-        sparkle.style.left = `${x}px`;
-        sparkle.style.top = `${y}px`;
-
-        document.body.appendChild(sparkle);
-      }
-    }
-
-    window.addEventListener("load", () => {
+    // Initialize sparkles on load and poem container resize
+    window.addEventListener('load', () => {
       createSparkles();
     });
 
-    // Optional: recreate sparkles on window resize (to reposition)
-    window.addEventListener("resize", () => {
-      // Remove old sparkles
-      document.querySelectorAll(".sparkle").forEach(el => el.remove());
+    // Optional: recreate sparkles on window resize
+    window.addEventListener('resize', () => {
       createSparkles();
     });
-
   </script>
 </body>
 </html>
