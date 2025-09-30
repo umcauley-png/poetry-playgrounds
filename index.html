@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>St Catherine's Poetry Playground — Random with Rich Word Banks</title>
+  <title>St Catherine's Poetry Playground — Random with Poetic Devices</title>
   <style>
     body {
       font-family: 'Avenir Next', 'Segoe UI', 'Helvetica Neue', sans-serif;
@@ -37,13 +37,13 @@
 
     .poem-box {
       margin-top: 40px;
-      font-size: 2rem;
+      font-size: 1.8rem;
       background-color: rgba(214, 246, 214, 0.9);
       border: 4px dashed #8bd3dd;
       padding: 30px;
       border-radius: 15px;
-      min-height: 140px;
-      width: 320px;
+      min-height: 160px;
+      width: 360px;
       max-width: 90vw;
       position: relative;
       color: #172c66;
@@ -87,26 +87,6 @@
       background-color: #3a8a38;
     }
 
-    textarea {
-      margin-top: 20px;
-      width: 320px;
-      max-width: 90vw;
-      height: 80px;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: 2px solid #8bd3dd;
-      padding: 10px;
-      resize: vertical;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    label {
-      display: block;
-      margin-top: 20px;
-      font-weight: bold;
-      color: #172c66;
-    }
-
     #sparklesContainer {
       position: absolute;
       pointer-events: none;
@@ -143,9 +123,6 @@
     <div id="sparklesContainer"></div>
   </div>
 
-  <label for="userLine">Add your own line to the poem:</label>
-  <textarea id="userLine" placeholder="Type your line here..."></textarea>
-
   <div>
     <button onclick="generatePoem()">Make a Poem</button>
     <button id="copyButton" onclick="copyPoem()">Copy Poem</button>
@@ -154,21 +131,31 @@
   <audio id="chimeSound" src="magic_chime.mp3" preload="auto"></audio>
 
   <script>
+    // Expanded word banks with adjectives and animals
     const wordBanks = {
       who: [
-        "A dragon", "The moon", "A kitten", "A pirate", "A robot", "The sun", "A fairy", "A dinosaur", "A wizard", "A butterfly", "A mermaid", "A tiger", "An astronaut", "A ghost", "A squirrel",
-        "An elephant", "A hummingbird", "A penguin", "A fox", "A dolphin", "A lion", "A rabbit", "A bear"
+        "A dragon", "The moon", "A kitten", "A pirate", "A robot", "The sun",
+        "A fairy", "A dinosaur", "A wizard", "A butterfly", "A mermaid", "A tiger",
+        "An astronaut", "A ghost", "A squirrel", "An elephant", "A fox", "An owl",
+        "A dolphin", "A lion", "A panda", "A rabbit", "A bear cub", "A songbird"
       ],
       action: [
-        "dances", "sings", "jumps", "giggles", "spins", "whispers", "paints", "stomps", "dreams", "twirls", "runs", "flies", "hides", "laughs", "swims",
-        "roars", "wanders", "climbs", "glows", "rests", "soars", "prances", "howls"
+        "dances", "sings", "jumps", "giggles", "spins", "whispers", "paints",
+        "stomps", "dreams", "twirls", "runs", "flies", "hides", "laughs", "swims",
+        "roars", "glows", "tiptoes", "wanders", "plays"
       ],
       where: [
-        "in the rain", "on a rainbow", "under the stars", "on a flying cloud", "through the jungle", "beside a waterfall", "with a magic brush", "in a puddle", "on a mountain top", "over a candy castle", "inside a treasure chest", "by the ocean", "in a secret garden", "on a sandy beach", "under the moonlight",
-        "in tall grass", "on a drifting leaf", "under ancient trees", "by the river bend", "across the open plain", "in the Arctic snow", "beneath coral reefs"
+        "in the rain", "on a rainbow", "under the stars", "on a flying cloud",
+        "through the jungle", "beside a waterfall", "with a magic brush", "in a puddle",
+        "on a mountain top", "over a candy castle", "inside a treasure chest",
+        "by the ocean", "in a secret garden", "on a sandy beach", "under the moonlight",
+        "in the forest", "near the river", "upon the hills", "in tall grass",
+        "on drifting clouds"
       ],
       adjectives: [
-        "gentle", "shimmering", "restless", "ancient", "tiny", "gleaming", "wandering", "brave", "curious", "playful", "silent", "golden", "mighty", "glorious"
+        "gentle", "misty", "ancient", "shimmering", "tiny", "striped", "furry",
+        "feathered", "brave", "curious", "sleepy", "golden", "restless",
+        "sparkling", "lonely", "singing", "whispering"
       ]
     };
 
@@ -178,32 +165,59 @@
       "And everything whispers back",
       "As the night tilts its hat",
       "Beneath a glittering hush",
-      "When the world holds its breath",
-      "Where shadows learn to dance"
+      "While the sky hums a secret song",
+      "Carrying stories never told",
+      "In the hush of endless skies"
+    ];
+
+    const personificationEndings = [
+      "as if it had feelings",
+      "whispering secrets to the wind",
+      "humming with hidden dreams",
+      "longing for a friend",
+      "singing to itself"
     ];
 
     function getRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-    function maybeWithAdjective(word){
-      if(Math.random() < 0.5){
-        return getRandom(wordBanks.adjectives) + " " + word.toLowerCase();
+    // Poetic device helpers
+    function applyAlliteration(line){
+      const firstLetter = line.charAt(0).toLowerCase();
+      const extraWord = getRandom(["fluttering","flickering","flowing","flying","fizzing"]);
+      if(extraWord.charAt(0) === firstLetter){
+        return line + " " + extraWord;
       }
-      return word;
+      return line;
     }
 
-    function generateRandomPoem(userLine){
-      const line1 = maybeWithAdjective(getRandom(wordBanks.who));
-      const line2 = maybeWithAdjective(getRandom(wordBanks.action));
-      const line3 = maybeWithAdjective(getRandom(wordBanks.where));
+    function applyRepetition(line){
+      return line + ", " + line.toLowerCase();
+    }
+
+    function applyPersonification(line){
+      return line + " " + getRandom(personificationEndings);
+    }
+
+    function maybeAddDevice(line){
+      const roll = Math.random();
+      if(roll < 0.25){ return applyPersonification(line); }
+      else if(roll < 0.45){ return applyAlliteration(line); }
+      else if(roll < 0.6){ return applyRepetition(line); }
+      return line;
+    }
+
+    function generateRandomPoem(){
+      const adj = Math.random() < 0.5 ? getRandom(wordBanks.adjectives)+" " : "";
+      const line1 = maybeAddDevice(adj + getRandom(wordBanks.who));
+      const line2 = maybeAddDevice(getRandom(wordBanks.action));
+      const line3 = maybeAddDevice(getRandom(wordBanks.where));
       let lines = [line1, line2, line3];
-      if(userLine.trim()) lines.push(userLine.trim());
       lines.push(getRandom(additionalLines));
       return lines.join("\n");
     }
 
     function generatePoem(){
-      const userLine = document.getElementById('userLine').value;
-      const poemText = generateRandomPoem(userLine);
+      const poemText = generateRandomPoem();
       const poemBox = document.getElementById('poemBox');
       poemBox.textContent = poemText;
       poemBox.classList.remove('bounce');
