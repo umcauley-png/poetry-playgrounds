@@ -20,7 +20,7 @@
     }
 
     h1 {
-      color: #2c3e50; /* darker navy/charcoal tone */
+      color: #2c3e50;
       background-color: rgba(255, 255, 255, 0.8);
       display: inline-block;
       padding: 10px 20px;
@@ -32,18 +32,18 @@
       margin-top: 0;
       font-weight: 600;
       margin-bottom: 20px;
-      color: #34495e; /* slightly lighter than title for contrast */
+      color: #34495e;
     }
 
     .poem-box {
       margin-top: 40px;
-      font-size: 2rem;
-      background-color: rgba(214, 246, 214, 0.9);
-      border: 6px double #8bd3dd; /* fun frame */
+      font-size: 1.8rem;
+      background-color: rgba(214, 246, 214, 0.95);
+      border: 6px double #8bd3dd;
       padding: 30px;
       border-radius: 20px;
       min-height: 160px;
-      width: 360px;
+      width: 380px;
       max-width: 90vw;
       position: relative;
       color: #172c66;
@@ -69,7 +69,7 @@
       border: none;
       padding: 15px 30px;
       font-size: 1.5rem;
-      margin: 15px 10px 30px 10px;
+      margin: 15px 10px 20px 10px;
       border-radius: 10px;
       cursor: pointer;
       transition: background 0.3s ease;
@@ -85,6 +85,26 @@
     }
     #copyButton:hover {
       background-color: #3a8a38;
+    }
+
+    textarea {
+      margin-top: 15px;
+      width: 380px;
+      max-width: 90vw;
+      height: 80px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 2px solid #8bd3dd;
+      padding: 10px;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #172c66;
     }
 
     #sparklesContainer {
@@ -117,17 +137,20 @@
   <h1>St Catherine's Poetry Playground</h1>
   <p id="subtitle">Click the button to create your own poem!</p>
 
-  <div class="poem-box" id="poemBox">
+  <div class="poem-box" id="poemBox" contenteditable="true">
     Your poem will appear here...
     <div id="sparklesContainer"></div>
   </div>
+
+  <label for="userLine">Add your own line (optional):</label>
+  <textarea id="userLine" placeholder="Type your line here..."></textarea>
 
   <div>
     <button onclick="generatePoem()">Make a Poem</button>
     <button id="copyButton" onclick="copyPoem()">Copy Poem</button>
   </div>
 
-  <audio id="chimeSound" src="magic_chime.mp3" preload="auto"></audio>
+  <audio id="chimeSound" src="magic_chime.flac" preload="auto"></audio>
 
   <script>
     const wordBanks = {
@@ -171,28 +194,27 @@
 
     function getRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-    function generateRandomPoem(){
+    function generateRandomPoem(userLine){
       const adj = Math.random() < 0.4 ? getRandom(wordBanks.adjectives) + " " : "";
       const line1 = (adj + getRandom(wordBanks.who)).replace(/^\w/, c => c.toUpperCase());
       const line2 = getRandom(wordBanks.action);
       const line3 = getRandom(wordBanks.where);
-      const line4 = getRandom(additionalLines);
-
-      const lines = [line1, line2, line3, line4];
+      let lines = [line1, line2, line3];
+      if(userLine.trim()) lines.push(userLine.trim());
+      lines.push(getRandom(additionalLines));
       return lines;
     }
 
     function generatePoem(){
+      const userLine = document.getElementById('userLine').value;
       const poemBox = document.getElementById('poemBox');
       const sparkles = document.getElementById('sparklesContainer');
-      const lines = generateRandomPoem();
+      const lines = generateRandomPoem(userLine);
 
-      // Animate each line separately
       poemBox.innerHTML = lines.map((line, i) =>
         `<div class="poem-line" style="animation-delay:${i*0.5}s">${line}</div>`
       ).join("") + sparkles.outerHTML;
 
-      // Replay chime
       const sound = document.getElementById("chimeSound");
       if(sound){ sound.currentTime = 0; sound.play(); }
 
