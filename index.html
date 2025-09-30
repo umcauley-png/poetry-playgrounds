@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>St Catherine's Poetry Playground — Expanded Verbs</title>
+  <title>St Catherine's Poetry Playground — Expanded Banks</title>
   <style>
     body {
       font-family: 'Avenir Next', 'Segoe UI', 'Helvetica Neue', sans-serif;
@@ -43,7 +43,7 @@
       padding: 30px;
       border-radius: 15px;
       min-height: 140px;
-      width: 320px;
+      width: 360px;
       max-width: 90vw;
       position: relative;
       color: #172c66;
@@ -52,10 +52,7 @@
       user-select: text;
     }
 
-    .bounce {
-      animation: bounce 0.6s;
-    }
-
+    .bounce { animation: bounce 0.6s; }
     @keyframes bounce {
       0% { transform: scale(1); }
       30% { transform: scale(1.1); }
@@ -75,17 +72,10 @@
       transition: background 0.3s ease;
       font-family: inherit;
     }
+    button:hover { background-color: #fb8500; }
 
-    button:hover {
-      background-color: #fb8500;
-    }
-
-    #copyButton {
-      background-color: #4caf50;
-    }
-    #copyButton:hover {
-      background-color: #3a8a38;
-    }
+    #copyButton { background-color: #4caf50; }
+    #copyButton:hover { background-color: #3a8a38; }
 
     #sparklesContainer {
       position: absolute;
@@ -99,7 +89,6 @@
       overflow: visible;
       z-index: 10;
     }
-
     .sparkle {
       position: absolute;
       border-radius: 50%;
@@ -107,7 +96,6 @@
       animation: twinkle 2s infinite ease-in-out;
       filter: drop-shadow(0 0 2px currentColor);
     }
-
     @keyframes twinkle {
       0%, 100% { opacity: 0.8; }
       50% { opacity: 0.2; }
@@ -133,66 +121,89 @@
   <script>
     const wordBanks = {
       who: [
-        "A playful fox", "The wise owl", "A striped zebra", "The golden eagle", 
-        "A gentle dolphin", "The curious cat", "A sleepy bear", "The spotted leopard",
-        "A dancing rabbit", "The soaring hawk", "A tiny mouse", "The strong elephant",
-        "A glittering butterfly", "The clever raven", "A wandering wolf", "The colorful parrot"
+        "a shimmering fox", "the golden eagle", "a quiet rabbit", "the wandering wolf",
+        "a glowing jellyfish", "the restless river", "a playful dolphin", "the silver moon",
+        "an ancient oak", "the laughing child", "a gentle deer", "the whispering wind",
+        "a clever cat", "the proud lion", "a tiny turtle", "the curious owl",
+        "a glowing star", "the brave bear", "a buzzing bee", "the dancing flame"
       ],
       action: [
-        "dances lightly", "sings softly", "jumps high", "spins quickly", "runs swiftly",
-        "glides gracefully", "tiptoes silently", "bursts joyfully", "marches proudly",
-        "wanders slowly", "twirls playfully", "hides quietly", "soars boldly", "stomps loudly",
-        "paints brightly", "whispers gently", "climbs carefully", "dives deeply", "flows smoothly",
-        "gallops fast", "skips merrily", "rests peacefully", "creeps slowly", "drifts lazily"
+        "dances softly", "sings brightly", "jumps high", "giggles loudly",
+        "spins quickly", "whispers gently", "paints boldly", "stomps wildly",
+        "dreams quietly", "twirls gracefully", "runs swiftly", "flies high",
+        "hides shyly", "laughs loudly", "swims slowly", "glides gracefully",
+        "soars boldly", "tiptoes silently", "bursts joyfully", "wanders freely"
       ],
       where: [
-        "in the tall grass", "under the shining moon", "through the misty forest", 
-        "on the sparkling river", "beside the quiet lake", "under a blanket of stars",
-        "on a golden beach", "by the ancient oak", "over the rolling hills",
-        "in the blooming meadow", "near the rushing waterfall", "across the sandy desert",
-        "on a rainbow path", "through the crystal cave", "under the bright sky",
-        "by the glowing campfire", "on the snowy mountain", "along the winding trail"
+        "in the golden savanna", "on a rainbow bridge", "under the starlit sky",
+        "on a drifting cloud", "through the misty jungle", "beside a waterfall",
+        "with a magic brush", "in a sparkling puddle", "on a mountain peak",
+        "over a candy castle", "inside a treasure chest", "by the wide ocean",
+        "in a secret garden", "on a sandy shore", "beneath the moonlight",
+        "through the snowy tundra", "within the coral reef", "under the ancient oak",
+        "in the desert dunes", "across the rolling meadow"
       ]
     };
 
     const additionalLines = [
-      "Where dreams meet the dawn",
-      "Beneath a canvas of colors",
-      "As the horizon stretches wide",
-      "Through echoes of hidden wonder",
-      "In the hush of twilight glow"
-    ];
+  "Where dreams take flight",
+  "In a world of wonder",
+  "With magic in the air",
+  "As the night softly falls",
+  "Beneath the sparkling sky",
+  "Until the morning wakes",
+  "Where silence hums with light",
+  "As rivers sing their song",
+  "While shadows gently fade",
+  "Where laughter paints the air",
+  "Until the stars grow tired",
+  "Where the earth holds its breath",
+  "As dawn begins to glow",
+  "As the meadow drifts to sleep",
+  "Where oceans guard their secrets",
+  "Until the golden sun returns",
+  "As mountains whisper low",
+  "Where the horizon melts away",
+  "Until tomorrow’s song begins",
+  "As fireflies light the dark",
+  "Where time forgets to move"
+  "When whispers meet the wind",
+  "Where colours start to bloom"
+];
 
-    const imageryPool = [
-      line => "Shadows stretch across " + line.toLowerCase(),
-      line => "Golden light crowns " + line.toLowerCase(),
-      line => "Whispers weave through " + line.toLowerCase(),
-      line => "Crystal sparks shine on " + line.toLowerCase()
-    ];
 
     function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-    function maybeApplyImagery(line) {
-      if (Math.random() < 1/6) {
-        return getRandom(imageryPool)(line);
+    function maybeAlliterate(line) {
+      if (Math.random() < 0.16) { // ~1 in 6 poems
+        const words = line.split(" ");
+        if (words.length > 2) {
+          const first = words[1][0].toLowerCase();
+          words[1] = words[1].replace(/^[a-z]/i, first + first);
+        }
+        return words.join(" ");
       }
       return line;
     }
 
-    function generateRandomPoem(){
-      const line1 = getRandom(wordBanks.who);
-      const line2 = getRandom(wordBanks.action);
-      const line3 = getRandom(wordBanks.where);
-      let lines = [line1, line2, line3, getRandom(additionalLines)];
-      // apply imagery occasionally
-      const i = Math.floor(Math.random() * lines.length);
-      lines[i] = maybeApplyImagery(lines[i]);
-      // Capitalize first letter of first line
+    function generateRandomPoem() {
+      let lines = [
+        getRandom(wordBanks.who),
+        getRandom(wordBanks.action),
+        getRandom(wordBanks.where),
+        getRandom(additionalLines)
+      ];
+      // Apply alliteration occasionally
+      if (Math.random() < 0.16) {
+        const idx = Math.floor(Math.random() * lines.length);
+        lines[idx] = maybeAlliterate(lines[idx]);
+      }
+      // Ensure capitalization on first line
       lines[0] = lines[0].charAt(0).toUpperCase() + lines[0].slice(1);
       return lines.join("\n");
     }
 
-    function generatePoem(){
+    function generatePoem() {
       const poemText = generateRandomPoem();
       const poemBox = document.getElementById('poemBox');
       poemBox.textContent = poemText;
@@ -200,39 +211,40 @@
       void poemBox.offsetWidth;
       poemBox.classList.add('bounce');
       const sound = document.getElementById("chimeSound");
-      if(sound){ sound.currentTime = 0; sound.play(); }
+      if (sound) { sound.currentTime = 0; sound.play(); }
     }
 
-    function copyPoem(){
+    function copyPoem() {
       const text = document.getElementById('poemBox').textContent;
-      navigator.clipboard.writeText(text).then(()=>alert('Poem copied!'));
+      navigator.clipboard.writeText(text).then(() => alert('Poem copied!'));
     }
 
-    function createSparkles(){
-      const container=document.getElementById('sparklesContainer');
-      container.innerHTML='';
-      const colors=['#FFD700','#FF69B4','#00FFFF','#FF4500','#7CFC00','#FF00FF'];
-      for(let i=0;i<20;i++){
-        const sparkle=document.createElement('div');
+    function createSparkles() {
+      const container = document.getElementById('sparklesContainer');
+      container.innerHTML = '';
+      const colors = ['#FFD700','#FF69B4','#00FFFF','#FF4500','#7CFC00','#FF00FF'];
+      for (let i=0; i<20; i++) {
+        const sparkle = document.createElement('div');
         sparkle.classList.add('sparkle');
-        sparkle.style.width=sparkle.style.height=`${Math.random()*8+4}px`;
-        sparkle.style.backgroundColor=getRandom(colors);
-        const edge=Math.floor(Math.random()*4);
-        let x,y;
-        switch(edge){
-          case 0: x=Math.random()*container.clientWidth; y=Math.random()*10; break;
-          case 1: x=container.clientWidth-Math.random()*10; y=Math.random()*container.clientHeight; break;
-          case 2: x=Math.random()*container.clientWidth; y=container.clientHeight-Math.random()*10; break;
-          case 3: x=Math.random()*10; y=Math.random()*container.clientHeight; break;
+        sparkle.style.width = sparkle.style.height = `${Math.random()*8+4}px`;
+        sparkle.style.backgroundColor = getRandom(colors);
+        const edge = Math.floor(Math.random()*4);
+        let x, y;
+        switch(edge) {
+          case 0: x = Math.random()*container.clientWidth; y = Math.random()*10; break;
+          case 1: x = container.clientWidth-Math.random()*10; y = Math.random()*container.clientHeight; break;
+          case 2: x = Math.random()*container.clientWidth; y = container.clientHeight-Math.random()*10; break;
+          case 3: x = Math.random()*10; y = Math.random()*container.clientHeight; break;
         }
-        sparkle.style.left=`${x}px`; sparkle.style.top=`${y}px`;
-        sparkle.style.animationDuration=(Math.random()*2+1)+'s';
+        sparkle.style.left = `${x}px`;
+        sparkle.style.top = `${y}px`;
+        sparkle.style.animationDuration = (Math.random()*2+1)+'s';
         container.appendChild(sparkle);
       }
     }
 
-    window.addEventListener('load',()=>{createSparkles();});
-    window.addEventListener('resize',()=>{createSparkles();});
+    window.addEventListener('load', createSparkles);
+    window.addEventListener('resize', createSparkles);
   </script>
 </body>
 </html>
