@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>St Catherine's Poetry Playground — Random Only</title>
+  <title>St Catherine's Poetry Playground — Expanded Verbs</title>
   <style>
     body {
       font-family: 'Avenir Next', 'Segoe UI', 'Helvetica Neue', sans-serif;
@@ -37,13 +37,13 @@
 
     .poem-box {
       margin-top: 40px;
-      font-size: 1.8rem;
+      font-size: 2rem;
       background-color: rgba(214, 246, 214, 0.9);
       border: 4px dashed #8bd3dd;
       padding: 30px;
       border-radius: 15px;
-      min-height: 160px;
-      width: 380px;
+      min-height: 140px;
+      width: 320px;
       max-width: 90vw;
       position: relative;
       color: #172c66;
@@ -131,93 +131,64 @@
   <audio id="chimeSound" src="magic_chime.mp3" preload="auto"></audio>
 
   <script>
-    // Expanded word banks
     const wordBanks = {
       who: [
-        "A gentle lion", "The striped zebra", "A wise old owl", "The playful dolphin",
-        "A tiny mouse", "The glowing firefly", "A brave explorer", "The curious cat",
-        "A glittering dragon", "The silver moon", "A laughing child", "The golden eagle",
-        "A clever fox", "The quiet turtle", "A singing mermaid", "The mighty elephant",
-        "A wandering star", "The dancing bear", "A shy unicorn", "The red kangaroo"
+        "A playful fox", "The wise owl", "A striped zebra", "The golden eagle", 
+        "A gentle dolphin", "The curious cat", "A sleepy bear", "The spotted leopard",
+        "A dancing rabbit", "The soaring hawk", "A tiny mouse", "The strong elephant",
+        "A glittering butterfly", "The clever raven", "A wandering wolf", "The colorful parrot"
       ],
       action: [
-        "dances swiftly", "sings softly", "jumps high", "giggles loudly",
-        "spins gracefully", "whispers gently", "paints wildly", "stomps proudly",
-        "dreams deeply", "twirls endlessly", "runs quickly", "flies silently",
-        "hides quietly", "laughs brightly", "swims smoothly", "roars boldly",
-        "hums sweetly", "tiptoes carefully", "glows warmly", "wanders freely"
+        "dances lightly", "sings softly", "jumps high", "spins quickly", "runs swiftly",
+        "glides gracefully", "tiptoes silently", "bursts joyfully", "marches proudly",
+        "wanders slowly", "twirls playfully", "hides quietly", "soars boldly", "stomps loudly",
+        "paints brightly", "whispers gently", "climbs carefully", "dives deeply", "flows smoothly",
+        "gallops fast", "skips merrily", "rests peacefully", "creeps slowly", "drifts lazily"
       ],
       where: [
-        "in the lush jungle", "on a rainbow path", "under the twinkling stars",
-        "through the misty forest", "beside a sparkling waterfall",
-        "with a golden brush", "in a quiet burrow", "on a snowy mountain top",
-        "over a candy castle", "inside a coral reef", "by the wide ocean",
-        "in a secret garden", "on a sandy savanna", "under the glowing moonlight",
-        "across the windy desert", "inside a crystal cave",
-        "on the frozen tundra", "beneath the jungle canopy",
-        "beside the tall cliffs", "through the grassy meadow"
+        "in the tall grass", "under the shining moon", "through the misty forest", 
+        "on the sparkling river", "beside the quiet lake", "under a blanket of stars",
+        "on a golden beach", "by the ancient oak", "over the rolling hills",
+        "in the blooming meadow", "near the rushing waterfall", "across the sandy desert",
+        "on a rainbow path", "through the crystal cave", "under the bright sky",
+        "by the glowing campfire", "on the snowy mountain", "along the winding trail"
       ]
     };
 
     const additionalLines = [
-      "Where dreams come alive",
-      "In a pocket full of wonder",
-      "And everything whispers back",
-      "As the night tilts its hat",
-      "Beneath a glittering hush",
-      "Where secrets hide in shadows",
-      "As the morning stretches awake",
-      "And hope begins to bloom"
+      "Where dreams meet the dawn",
+      "Beneath a canvas of colors",
+      "As the horizon stretches wide",
+      "Through echoes of hidden wonder",
+      "In the hush of twilight glow"
     ];
 
-    // Small pool of poetic devices
-    const personifications = [
-      "as if it had feelings",
-      "whispering secrets to the wind",
-      "humming with hidden dreams",
-      "longing for a friend",
-      "singing to itself"
+    const imageryPool = [
+      line => "Shadows stretch across " + line.toLowerCase(),
+      line => "Golden light crowns " + line.toLowerCase(),
+      line => "Whispers weave through " + line.toLowerCase(),
+      line => "Crystal sparks shine on " + line.toLowerCase()
     ];
 
-    function getRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-    function applyDevice(line) {
-      // About 1 in 6 poems will get a device on one line
-      if (Math.random() < (1/6)) {
-        if (Math.random() < 0.5) {
-          // Personification
-          return line + ", " + getRandom(personifications);
-        } else {
-          // Alliteration (repeat first letter)
-          const words = line.split(" ");
-          if (words.length > 1) {
-            const firstLetter = words[1][0].toLowerCase();
-            return line + " " + firstLetter + firstLetter + firstLetter;
-          }
-        }
+    function maybeApplyImagery(line) {
+      if (Math.random() < 1/6) {
+        return getRandom(imageryPool)(line);
       }
       return line;
     }
 
-    function capitalizeFirst(line) {
-      return line.charAt(0).toUpperCase() + line.slice(1);
-    }
-
     function generateRandomPoem(){
-      let lines = [
-        getRandom(wordBanks.who),
-        getRandom(wordBanks.action),
-        getRandom(wordBanks.where),
-        getRandom(additionalLines)
-      ];
-
-      // Ensure only one device per poem at most
-      const deviceIndex = Math.floor(Math.random() * lines.length);
-      lines[deviceIndex] = applyDevice(lines[deviceIndex]);
-
-      // Capitalize the first line
-      lines[0] = capitalizeFirst(lines[0]);
-
+      const line1 = getRandom(wordBanks.who);
+      const line2 = getRandom(wordBanks.action);
+      const line3 = getRandom(wordBanks.where);
+      let lines = [line1, line2, line3, getRandom(additionalLines)];
+      // apply imagery occasionally
+      const i = Math.floor(Math.random() * lines.length);
+      lines[i] = maybeApplyImagery(lines[i]);
+      // Capitalize first letter of first line
+      lines[0] = lines[0].charAt(0).toUpperCase() + lines[0].slice(1);
       return lines.join("\n");
     }
 
