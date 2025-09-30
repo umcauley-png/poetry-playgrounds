@@ -9,17 +9,18 @@
       font-family: 'Avenir Next', 'Segoe UI', 'Helvetica Neue', sans-serif;
       background: url('https://raw.githubusercontent.com/umcauley-png/poetry-playgrounds/refs/heads/main/a%20playground%20that%20i%20can%20use%20as%20a%20background.jpg') no-repeat center center fixed;
       background-size: cover;
-      color: #6A5ACD;
+      color: #172c66;
       text-align: center;
       padding: 40px 20px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: flex-start;
     }
 
     h1 {
-      color: #f582ae;
+      color: #2c3e50; /* darker navy/charcoal tone */
       background-color: rgba(255, 255, 255, 0.8);
       display: inline-block;
       padding: 10px 20px;
@@ -31,58 +32,85 @@
       margin-top: 0;
       font-weight: 600;
       margin-bottom: 20px;
-      color: #444;
+      color: #34495e; /* slightly lighter than title for contrast */
     }
 
     .poem-box {
-      margin-top: 30px;
-      font-size: 1.6rem;
-      background-color: #fffefc;
+      margin-top: 40px;
+      font-size: 2rem;
+      background-color: rgba(214, 246, 214, 0.9);
+      border: 6px double #8bd3dd; /* fun frame */
       padding: 30px;
-      border-radius: 15px;
+      border-radius: 20px;
       min-height: 160px;
-      width: 380px;
-      max-width: 95vw;
-      color: #172c66;
-      box-shadow: 0 0 15px rgba(0,0,0,0.25);
-      white-space: pre-line;
-      text-align: center;
+      width: 360px;
+      max-width: 90vw;
       position: relative;
-      box-sizing: border-box;
-      border: 12px solid transparent;
+      color: #172c66;
+      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+      white-space: pre-line;
+      user-select: text;
+      overflow-wrap: break-word;
     }
 
     .poem-line {
       opacity: 0;
       transform: translateY(10px);
-      animation: fadeInUp 0.8s forwards;
-      word-wrap: break-word;
+      animation: fadeInUp 0.6s forwards;
     }
 
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     button {
       background-color: #ffb703;
       border: none;
       padding: 15px 30px;
-      font-size: 1.2rem;
-      margin: 15px 8px;
+      font-size: 1.5rem;
+      margin: 15px 10px 30px 10px;
       border-radius: 10px;
       cursor: pointer;
       transition: background 0.3s ease;
       font-family: inherit;
     }
 
-    button:hover { background-color: #fb8500; }
+    button:hover {
+      background-color: #fb8500;
+    }
 
-    #copyButton { background-color: #4caf50; }
-    #copyButton:hover { background-color: #3a8a38; }
+    #copyButton {
+      background-color: #4caf50;
+    }
+    #copyButton:hover {
+      background-color: #3a8a38;
+    }
 
-    #saveButton { background-color: #219ebc; color: white; }
-    #saveButton:hover { background-color: #126782; }
+    #sparklesContainer {
+      position: absolute;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      border-radius: 15px;
+      overflow: visible;
+      z-index: 10;
+    }
+
+    .sparkle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: twinkle 2s infinite ease-in-out;
+      filter: drop-shadow(0 0 2px currentColor);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 0.2; }
+    }
   </style>
 </head>
 <body>
@@ -91,119 +119,117 @@
 
   <div class="poem-box" id="poemBox">
     Your poem will appear here...
+    <div id="sparklesContainer"></div>
   </div>
 
   <div>
     <button onclick="generatePoem()">Make a Poem</button>
     <button id="copyButton" onclick="copyPoem()">Copy Poem</button>
-    <button id="saveButton" onclick="savePoem()">Save as Image</button>
   </div>
 
   <audio id="chimeSound" src="magic_chime.mp3" preload="auto"></audio>
 
-  <!-- html2canvas for saving poems -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
   <script>
     const wordBanks = {
       who: [
-        "A shimmering fox", "The restless river", "A golden eagle", "The playful otter", "A silver wolf",
-        "The gentle giant whale", "A curious cat", "The soaring falcon", "A striped tiger", "The glowing firefly"
+        "A golden fox", "The quiet owl", "A tiny mouse", "The brave lion",
+        "A dragon", "The moon", "A playful dolphin", "A soaring eagle",
+        "The gentle horse", "A curious rabbit", "A wise turtle", "The silver wolf"
       ],
       action: [
-        "glides gracefully", "dances wildly", "bursts with laughter", "soars boldly", "tiptoes silently",
-        "hums a secret song", "stomps playfully", "twirls in delight", "dreams quietly", "spins in wonder"
+        "dances", "sings", "jumps", "twirls", "leaps",
+        "glides", "whispers", "paints", "wanders", "dreams",
+        "runs", "flies", "hides", "laughs", "swims"
       ],
       where: [
-        "beneath the endless sky", "in the golden savanna", "through the jungle canopy", "by the coral reef",
-        "under the frosted moon", "beside the quiet stream", "across the rolling hills", "within the secret garden",
-        "along the desert sands", "underneath the tall pines"
+        "in the rain", "on a rainbow", "under the stars", "on a flying cloud",
+        "through the jungle", "beside a waterfall", "with a magic brush",
+        "on a mountain top", "by the ocean", "in a secret garden",
+        "across the endless desert", "under the bright moonlight"
+      ],
+      adjectives: [
+        "shimmering", "silent", "gentle", "mysterious", "golden",
+        "tiny", "brave", "curious", "silver", "wild"
       ]
     };
 
     const additionalLines = [
-      "Where dreams take flight", "In a world of wonder", "With magic in the air", "As the night softly falls",
-      "Beneath the sparkling sky", "Until the morning wakes", "Where silence hums with light", "As rivers sing their song",
-      "While shadows gently fade", "Where laughter paints the air", "Until the stars grow tired", "As dawn begins to glow",
-      "When whispers meet the wind", "Where colors start to bloom",
-      "As the meadow drifts to sleep", "Where oceans guard their secrets", "Until the golden sun returns",
-      "As mountains whisper low", "Where the horizon melts away", "As fireflies light the dark", "Where time forgets to move"
-    ];
-
-    // Pool of frame images
-    const frames = [
-      "https://i.imgur.com/BLFvZfY.png",
-      "https://i.imgur.com/4Ih7Bbn.png",
-      "https://i.imgur.com/dnFXvbX.png",
-      "https://i.imgur.com/MxIjCOy.png"
+      "Where dreams come alive",
+      "In a small pocket of wonder",
+      "And everything whispers back",
+      "As the night tilts its hat",
+      "Beneath a glittering hush",
+      "As the meadow drifts to sleep",
+      "Where oceans guard their secrets",
+      "Until the golden sun returns",
+      "As mountains whisper low",
+      "Where the horizon melts away",
+      "Until tomorrow’s song begins",
+      "As fireflies light the dark",
+      "Where time forgets to move"
     ];
 
     function getRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-    function applyAlliteration(line) {
-      const words = line.split(" ");
-      if (words.length > 2) {
-        const letter = words[1][0].toLowerCase();
-        return words.map((w,i)=> (i>0 && w[0].toLowerCase()===letter? w.toUpperCase(): w)).join(" ");
-      }
-      return line;
-    }
-
     function generateRandomPoem(){
-      let lines = [];
-      const line1 = getRandom(wordBanks.who);
+      const adj = Math.random() < 0.4 ? getRandom(wordBanks.adjectives) + " " : "";
+      const line1 = (adj + getRandom(wordBanks.who)).replace(/^\w/, c => c.toUpperCase());
       const line2 = getRandom(wordBanks.action);
       const line3 = getRandom(wordBanks.where);
       const line4 = getRandom(additionalLines);
 
-      lines = [line1, line2, line3, line4];
-
-      // Rare alliteration
-      if (Math.random() < 0.16) {
-        const idx = Math.floor(Math.random() * lines.length);
-        lines[idx] = applyAlliteration(lines[idx]);
-      }
-
-      // Capitalize first line
-      lines[0] = lines[0].charAt(0).toUpperCase() + lines[0].slice(1);
+      const lines = [line1, line2, line3, line4];
       return lines;
     }
 
     function generatePoem(){
       const poemBox = document.getElementById('poemBox');
-      poemBox.innerHTML = "";
+      const sparkles = document.getElementById('sparklesContainer');
       const lines = generateRandomPoem();
-      lines.forEach((line, i) => {
-        const div = document.createElement("div");
-        div.className = "poem-line";
-        div.style.animationDelay = `${i*0.8}s`;
-        div.textContent = line;
-        poemBox.appendChild(div);
-      });
 
-      // 🎨 Apply a random frame
-      const frame = getRandom(frames);
-      poemBox.style.borderImage = `url('${frame}') 30 round`;
+      // Animate each line separately
+      poemBox.innerHTML = lines.map((line, i) =>
+        `<div class="poem-line" style="animation-delay:${i*0.5}s">${line}</div>`
+      ).join("") + sparkles.outerHTML;
 
+      // Replay chime
       const sound = document.getElementById("chimeSound");
-      if(sound){ sound.currentTime=0; sound.play(); }
+      if(sound){ sound.currentTime = 0; sound.play(); }
+
+      createSparkles();
     }
 
     function copyPoem(){
-      const text = [...document.querySelectorAll(".poem-line")].map(el=>el.textContent).join("\n");
+      const text = Array.from(document.querySelectorAll('.poem-line'))
+        .map(line => line.textContent).join("\n");
       navigator.clipboard.writeText(text).then(()=>alert('Poem copied!'));
     }
 
-    function savePoem(){
-      const poemBox = document.getElementById("poemBox");
-      html2canvas(poemBox, {backgroundColor: "#fff"}).then(canvas=>{
-        const link = document.createElement("a");
-        link.download = "poem.png";
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-      });
+    function createSparkles(){
+      const container=document.getElementById('sparklesContainer');
+      container.innerHTML='';
+      const colors=['#FFD700','#FF69B4','#00FFFF','#FF4500','#7CFC00','#FF00FF'];
+      for(let i=0;i<20;i++){
+        const sparkle=document.createElement('div');
+        sparkle.classList.add('sparkle');
+        sparkle.style.width=sparkle.style.height=`${Math.random()*8+4}px`;
+        sparkle.style.backgroundColor=getRandom(colors);
+        const edge=Math.floor(Math.random()*4);
+        let x,y;
+        switch(edge){
+          case 0: x=Math.random()*container.clientWidth; y=Math.random()*10; break;
+          case 1: x=container.clientWidth-Math.random()*10; y=Math.random()*container.clientHeight; break;
+          case 2: x=Math.random()*container.clientWidth; y=container.clientHeight-Math.random()*10; break;
+          case 3: x=Math.random()*10; y=Math.random()*container.clientHeight; break;
+        }
+        sparkle.style.left=`${x}px`; sparkle.style.top=`${y}px`;
+        sparkle.style.animationDuration=(Math.random()*2+1)+'s';
+        container.appendChild(sparkle);
+      }
     }
+
+    window.addEventListener('load',()=>{createSparkles();});
+    window.addEventListener('resize',()=>{createSparkles();});
   </script>
 </body>
 </html>
-
