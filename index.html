@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>St Catherine's Poetry Playground — Enhanced</title>
+  <title>St Catherine's Poetry Playground — Random Only</title>
   <style>
     body {
       font-family: 'Avenir Next', 'Segoe UI', 'Helvetica Neue', sans-serif;
@@ -87,35 +87,6 @@
       background-color: #3a8a38;
     }
 
-    textarea {
-      margin-top: 20px;
-      width: 320px;
-      max-width: 90vw;
-      height: 80px;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: 2px solid #8bd3dd;
-      padding: 10px;
-      resize: vertical;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    label {
-      display: block;
-      margin-top: 20px;
-      font-weight: bold;
-      color: #172c66;
-    }
-
-    select {
-      margin-top: 10px;
-      font-size: 1rem;
-      padding: 8px 12px;
-      border-radius: 8px;
-      border: 2px solid #8bd3dd;
-      cursor: pointer;
-    }
-
     #sparklesContainer {
       position: absolute;
       pointer-events: none;
@@ -152,24 +123,6 @@
     <div id="sparklesContainer"></div>
   </div>
 
-  <label for="userLine">Add your own line to the poem:</label>
-  <textarea id="userLine" placeholder="Type your line here..."></textarea>
-
-  <label for="poemType">Choose poem type:</label>
-  <select id="poemType">
-    <option value="random">Random Poem</option>
-    <option value="rhyming">Rhyming Poem</option>
-  </select>
-
-  <label for="themeSelect">Choose a theme:</label>
-  <select id="themeSelect">
-    <option value="magic">Magic</option>
-    <option value="space">Space</option>
-    <option value="nature" selected>Nature</option>
-    <option value="candy">Candy</option>
-    <option value="animals">Animals</option>
-  </select>
-
   <div>
     <button onclick="generatePoem()">Make a Poem</button>
     <button id="copyButton" onclick="copyPoem()">Copy Poem</button>
@@ -178,7 +131,11 @@
   <audio id="chimeSound" src="magic_chime.mp3" preload="auto"></audio>
 
   <script>
-    const banks = { /* same expanded word banks as before */ };
+    const wordBanks = {
+      who: ["A dragon", "The moon", "A kitten", "A pirate", "A robot", "The sun", "A fairy", "A dinosaur", "A wizard", "A butterfly", "A mermaid", "A tiger", "An astronaut", "A ghost", "A squirrel"],
+      action: ["dances", "sings", "jumps", "giggles", "spins", "whispers", "paints", "stomps", "dreams", "twirls", "runs", "flies", "hides", "laughs", "swims"],
+      where: ["in the rain", "on a rainbow", "under the stars", "on a flying cloud", "through the jungle", "beside a waterfall", "with a magic brush", "in a puddle", "on a mountain top", "over a candy castle", "inside a treasure chest", "by the ocean", "in a secret garden", "on a sandy beach", "under the moonlight"]
+    };
 
     const additionalLines = [
       "Where dreams come alive",
@@ -188,29 +145,81 @@
       "Beneath a glittering hush"
     ];
 
-    const rhymePairs = { /* same rhyme pairs */ };
-
     function getRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-    function capitalize(str){ return str.charAt(0).toUpperCase() + str.slice(1); }
+    function addAlliteration(line) {
+      const words = line.split(" ");
+      if (words.length > 1) {
+        const firstLetter = words[0][0].toLowerCase();
+        return words.map(w => w[0].toLowerCase() === firstLetter ? w : w).join(" ");
+      }
+      return line;
+    }
 
-    function applyAlliteration(line, letter){ return line.split(" ").map(w => w[0].toLowerCase() === letter ? w : letter + w.slice(1)).join(" "); }
+    function addRepetition(line) {
+      return line + ", " + line.toLowerCase();
+    }
 
-    function applyRepetition(line){ return line + ", " + line.toLowerCase(); }
+    function addPersonification(line) {
+      return line + " as if it had feelings";
+    }
 
-    function applyPersonification(line){ return line.replace(/The |A /,"The laughing "); }
+    function decorateLine(line) {
+      const decorators = [addAlliteration, addRepetition, addPersonification];
+      if (Math.random() < 0.5) {
+        const decorator = getRandom(decorators);
+        return decorator(line);
+      }
+      return line;
+    }
 
-    function makeLine(theme, deviceMode){ /* generator logic with adjectives and devices */ }
+    function generateRandomPoem(){
+      const line1 = decorateLine(getRandom(wordBanks.who));
+      const line2 = decorateLine(getRandom(wordBanks.action));
+      const line3 = decorateLine(getRandom(wordBanks.where));
+      let lines = [line1, line2, line3];
+      lines.push(decorateLine(getRandom(additionalLines)));
+      return lines.join("\n");
+    }
 
-    function generateRandomPoem(userLine, theme){ let lines=[makeLine(theme,'all'),makeLine(theme,'all')]; if(userLine.trim()) lines.push(userLine.trim()); lines.push(getRandom(additionalLines)); return lines.join("\n"); }
+    function generatePoem(){
+      const poemText = generateRandomPoem();
+      const poemBox = document.getElementById('poemBox');
+      poemBox.textContent = poemText;
+      poemBox.classList.remove('bounce');
+      void poemBox.offsetWidth;
+      poemBox.classList.add('bounce');
+      const sound = document.getElementById("chimeSound");
+      if(sound){ sound.currentTime = 0; sound.play(); }
+    }
 
-    function generateRhymingPoem(userLine){ /* simple rhyming scheme */ }
+    function copyPoem(){
+      const text = document.getElementById('poemBox').textContent;
+      navigator.clipboard.writeText(text).then(()=>alert('Poem copied!'));
+    }
 
-    function generatePoem(){ /* handle theme, poem type, and output with bounce + sound */ }
-
-    function copyPoem(){ const text=document.getElementById('poemBox').textContent; navigator.clipboard.writeText(text).then(()=>alert('Poem copied!')); }
-
-    function createSparkles(){ /* sparkle generation */ }
+    function createSparkles(){
+      const container=document.getElementById('sparklesContainer');
+      container.innerHTML='';
+      const colors=['#FFD700','#FF69B4','#00FFFF','#FF4500','#7CFC00','#FF00FF'];
+      for(let i=0;i<20;i++){
+        const sparkle=document.createElement('div');
+        sparkle.classList.add('sparkle');
+        sparkle.style.width=sparkle.style.height=`${Math.random()*8+4}px`;
+        sparkle.style.backgroundColor=getRandom(colors);
+        const edge=Math.floor(Math.random()*4);
+        let x,y;
+        switch(edge){
+          case 0: x=Math.random()*container.clientWidth; y=Math.random()*10; break;
+          case 1: x=container.clientWidth-Math.random()*10; y=Math.random()*container.clientHeight; break;
+          case 2: x=Math.random()*container.clientWidth; y=container.clientHeight-Math.random()*10; break;
+          case 3: x=Math.random()*10; y=Math.random()*container.clientHeight; break;
+        }
+        sparkle.style.left=`${x}px`; sparkle.style.top=`${y}px`;
+        sparkle.style.animationDuration=(Math.random()*2+1)+'s';
+        container.appendChild(sparkle);
+      }
+    }
 
     window.addEventListener('load',()=>{createSparkles();});
     window.addEventListener('resize',()=>{createSparkles();});
